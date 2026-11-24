@@ -2,26 +2,27 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>TE-CD01 — Industrial Digital CD Player PWA</title>
-  <meta name="theme-color" content="#c8cacd" />
+  <meta name="theme-color" content="#171a1f" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="TE-CD01" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@500;600;700&family=JetBrains+Mono:wght@500;700&family=Share+Tech+Mono&display=swap');
 
     :root {
-      --chassis-base: #c9cbce;
-      --chassis-highlight: #d8dadc;
-      --chassis-shadow: #9ea2a8;
+      --chassis-base: #c3c5c8;
+      --chassis-highlight: #d5d7da;
+      --chassis-shadow: #989ca2;
       --led-red: #ff2a1f;
       --led-red-dim: rgba(255, 42, 31, 0.14);
-      --led-red-glow: 0 0 8px rgba(255, 42, 31, 0.72), 0 0 18px rgba(255, 30, 20, 0.35);
-      --disc-blue-1: #234c82;
-      --disc-blue-2: #17345c;
-      --disc-blue-3: #2b5a96;
+      --led-red-glow: 0 0 8px rgba(255, 42, 31, 0.78), 0 0 18px rgba(255, 30, 20, 0.38);
+      --disc-blue-1: #1f4478;
+      --disc-blue-2: #142d52;
+      --disc-blue-3: #285491;
     }
 
     * {
@@ -34,42 +35,59 @@
     html, body {
       margin: 0;
       padding: 0;
-      min-height: 100dvh;
-      background:
-        radial-gradient(circle at 50% 18%, #2b2f36 0%, #171a1f 55%, #0e1013 100%);
+      width: 100%;
+      height: 100dvh;
+      background: radial-gradient(circle at 50% 25%, #282c33 0%, #16191e 58%, #0c0e11 100%);
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       color: #181a1d;
-      overflow-x: hidden;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: max(8px, env(safe-area-inset-top)) 8px max(8px, env(safe-area-inset-bottom)) 8px;
+      gap: 10px;
+    }
+
+    /* Wrapper esterno per permettere alle sporgenze superiori (switch bianco/arancio) di restare visibili */
+    .chassis-stage {
+      position: relative;
+      /* Ottimizzato per Samsung S25 FE (2340x1080 -> aspect 19.5:9) mantenendo aspect-ratio fedele */
+      width: min(96vw, calc((100dvh - 64px) * 0.715), 520px);
+      aspect-ratio: 715 / 1000;
+      flex-shrink: 0;
     }
 
     /* Brushed aluminum hardware chassis */
     .cd-chassis {
-      position: relative;
-      width: min(94vw, calc(88dvh * 0.715), 540px);
-      aspect-ratio: 715 / 1000;
-      flex-shrink: 0;
+      position: absolute;
+      inset: 0;
+      top: 1.1%;
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.04) 14%, rgba(0,0,0,0.03) 86%, rgba(0,0,0,0.12) 100%),
+        linear-gradient(180deg, rgba(255,255,255,0.26) 0%, rgba(255,255,255,0.03) 14%, rgba(0,0,0,0.03) 86%, rgba(0,0,0,0.14) 100%),
         repeating-linear-gradient(
           90deg,
-          rgba(255,255,255,0.045) 0px,
-          rgba(255,255,255,0.045) 1px,
+          rgba(255,255,255,0.04) 0px,
+          rgba(255,255,255,0.04) 1px,
           rgba(0,0,0,0.025) 1px,
           rgba(0,0,0,0.025) 2px
         ),
-        linear-gradient(135deg, #d2d4d7 0%, #c6c8cb 48%, #bcc0c5 100%);
-      border-radius: 6px;
+        linear-gradient(135deg, #cecfd2 0%, #c1c3c6 50%, #b6b9be 100%);
+      border-radius: 3px;
       box-shadow:
-        0 28px 65px rgba(0, 0, 0, 0.68),
+        0 26px 60px rgba(0, 0, 0, 0.72),
         0 6px 16px rgba(0, 0, 0, 0.45),
-        inset 0 1px 1px rgba(255, 255, 255, 0.72),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.22),
+        inset 0 1px 1px rgba(255, 255, 255, 0.75),
+        inset 0 -2px 5px rgba(0, 0, 0, 0.25),
         inset 1px 0 1px rgba(255, 255, 255, 0.35),
-        inset -1px 0 2px rgba(0, 0, 0, 0.16);
+        inset -1px 0 2px rgba(0, 0, 0, 0.18);
       overflow: hidden;
     }
 
-    /* Fine micro-grain texture over chassis */
+    /* Fine micro-grain texture */
     .cd-chassis::before {
       content: "";
       position: absolute;
@@ -83,98 +101,123 @@
       z-index: 1;
     }
 
-    /* Recessed circular pockets & optical well */
+    /* Recessed circular pockets */
     .recess-pocket {
       position: absolute;
       border-radius: 9999px;
-      background: linear-gradient(160deg, #9fa3a9 0%, #c7c9cc 55%, #dce0e4 100%);
+      background: linear-gradient(155deg, #969aa0 0%, #c2c4c8 55%, #dcdfe3 100%);
       box-shadow:
-        inset 0 3px 7px rgba(0, 0, 0, 0.34),
-        inset 0 -1px 2px rgba(255, 255, 255, 0.55),
+        inset 0 4px 8px rgba(0, 0, 0, 0.38),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.6),
         0 1px 0 rgba(255, 255, 255, 0.55);
       pointer-events: none;
       z-index: 2;
     }
 
+    /* Raised metallic bushing jack holes */
     .connector-hole {
-      width: 2.55%;
+      position: absolute;
+      width: 3.1%;
       aspect-ratio: 1 / 1;
       border-radius: 9999px;
-      background: radial-gradient(circle at 35% 30%, #3a3e44 0%, #16181b 68%, #090a0c 100%);
+      background: radial-gradient(circle at 35% 30%, #e4e6e9 0%, #a5a9b0 70%, #7c8087 100%);
       box-shadow:
-        0 1px 1px rgba(255, 255, 255, 0.78),
-        inset 0 2px 4px rgba(0, 0, 0, 0.9);
-      position: relative;
+        0 2px 3px rgba(0, 0, 0, 0.42),
+        inset 0 1px 1px rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
     }
 
     .connector-hole::after {
       content: "";
-      position: absolute;
-      inset: 18%;
+      width: 52%;
+      height: 52%;
       border-radius: 9999px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: radial-gradient(circle at 40% 35%, #2b2e33 0%, #0d0e10 80%);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.95);
     }
 
+    /* Side screws (fixed position: absolute) */
     .screw-head {
-      width: 1.85%;
+      position: absolute;
+      width: 2.9%;
       aspect-ratio: 1 / 1;
       border-radius: 9999px;
-      background: radial-gradient(circle at 35% 30%, #e4e6e9 0%, #a8acb2 65%, #7d8187 100%);
+      background: radial-gradient(circle at 35% 30%, #e6e8eb 0%, #a5a9b0 68%, #7a7e85 100%);
       box-shadow:
-        0 1px 1px rgba(255,255,255,0.7),
-        inset 0 1px 2px rgba(0,0,0,0.45);
-      position: relative;
-      z-index: 3;
+        0 2px 3px rgba(0, 0, 0, 0.42),
+        inset 0 1px 1px rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
     }
 
     .screw-head::after {
       content: "";
-      position: absolute;
-      left: 22%;
-      right: 22%;
-      top: 47%;
-      height: 1.2px;
-      background: rgba(45, 48, 54, 0.65);
-      transform: rotate(-28deg);
+      width: 48%;
+      height: 48%;
+      border-radius: 9999px;
+      background: #1b1d21;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.9);
     }
 
     .silk-label {
       font-family: 'Inter', sans-serif;
       font-weight: 600;
-      letter-spacing: 0.05em;
-      color: #26292e;
+      letter-spacing: 0.04em;
+      color: #24272c;
       text-transform: uppercase;
       line-height: 1;
       pointer-events: none;
     }
 
+    /* Laser pickup bay with chamfered top-left corner */
+    .laser-bay {
+      position: absolute;
+      left: 22.8%;
+      top: 26.2%;
+      width: 14.5%;
+      height: 17.5%;
+      background: linear-gradient(165deg, #272a2f 0%, #121417 100%);
+      clip-path: polygon(36% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 24%);
+      border-radius: 4px;
+      box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.9),
+        0 1px 0 rgba(255, 255, 255, 0.65);
+      z-index: 5;
+      overflow: hidden;
+    }
+
     /* Rotating CD assembly */
     .cd-well-shadow {
       position: absolute;
-      left: 36.5%;
-      top: 10.5%;
-      width: 58%;
+      left: 31.6%;
+      top: 12.2%;
+      width: 67.5%;
       aspect-ratio: 1 / 1;
       border-radius: 9999px;
-      background: radial-gradient(circle at 50% 50%, rgba(0,0,0,0.34) 64%, rgba(0,0,0,0.12) 72%, transparent 76%);
-      z-index: 4;
+      background: radial-gradient(circle at 52% 52%, rgba(0,0,0,0.42) 65%, rgba(0,0,0,0.14) 71%, transparent 75%);
+      z-index: 6;
       pointer-events: none;
     }
 
     .cd-disc-wrapper {
       position: absolute;
-      left: 36.5%;
-      top: 10.5%;
-      width: 58%;
+      left: 31.2%;
+      top: 11.8%;
+      width: 67.5%;
       aspect-ratio: 1 / 1;
       border-radius: 9999px;
       z-index: 10;
       touch-action: none;
       cursor: grab;
       box-shadow:
-        0 10px 24px rgba(0, 0, 0, 0.42),
-        0 2px 6px rgba(0, 0, 0, 0.3),
-        inset 0 0 0 1.5px rgba(255, 255, 255, 0.28);
+        0 12px 26px rgba(0, 0, 0, 0.48),
+        0 3px 7px rgba(0, 0, 0, 0.34),
+        inset 0 0 0 2px rgba(210, 215, 222, 0.65);
       will-change: transform;
     }
 
@@ -191,11 +234,11 @@
       background:
         conic-gradient(
           from 25deg at 50% 50%,
-          rgba(255,255,255,0.08) 0deg,
+          rgba(255,255,255,0.07) 0deg,
           rgba(255,255,255,0.0) 55deg,
-          rgba(120,185,255,0.14) 115deg,
+          rgba(120,185,255,0.13) 115deg,
           rgba(255,255,255,0.02) 185deg,
-          rgba(255,255,255,0.11) 265deg,
+          rgba(255,255,255,0.10) 265deg,
           rgba(255,255,255,0.0) 360deg
         ),
         radial-gradient(circle at 50% 50%, var(--disc-blue-3) 0%, var(--disc-blue-1) 46%, var(--disc-blue-2) 100%);
@@ -217,53 +260,54 @@
       pointer-events: none;
       background:
         radial-gradient(circle at 50% 50%, transparent 18%, rgba(255,255,255,0.06) 19%, transparent 20%, transparent 66%, rgba(255,255,255,0.08) 67%, transparent 68%),
-        linear-gradient(125deg, rgba(255,255,255,0.18) 0%, transparent 38%, rgba(0,0,0,0.18) 100%);
+        linear-gradient(125deg, rgba(255,255,255,0.16) 0%, transparent 38%, rgba(0,0,0,0.22) 100%);
     }
 
     .cd-center-hub {
       position: absolute;
       left: 50%;
       top: 50%;
-      width: 28.5%;
-      height: 28.5%;
+      width: 27.5%;
+      height: 27.5%;
       transform: translate(-50%, -50%);
       border-radius: 9999px;
       z-index: 12;
       pointer-events: none;
       background:
-        radial-gradient(circle at 38% 35%, #5b5f66 0%, #2d3035 58%, #181a1d 100%);
+        radial-gradient(circle at 38% 35%, #4a4e55 0%, #23262b 58%, #121417 100%);
       box-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.65),
-        inset 0 1px 1px rgba(255, 255, 255, 0.45),
-        0 0 0 2px rgba(15, 17, 20, 0.55);
+        0 2px 7px rgba(0, 0, 0, 0.7),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4),
+        0 0 0 2.5px rgba(15, 17, 20, 0.7);
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
     .cd-spindle-hole {
-      width: 34%;
-      height: 34%;
+      width: 44%;
+      height: 44%;
       border-radius: 9999px;
-      background: radial-gradient(circle at 40% 35%, #1d2024 0%, #090a0c 85%);
+      background: radial-gradient(circle at 40% 35%, #2d3036 0%, #111316 85%);
       box-shadow:
         inset 0 2px 5px rgba(0, 0, 0, 0.95),
-        0 1px 1px rgba(255, 255, 255, 0.25);
-      border: 1.5px solid #6c7078;
+        0 1px 1px rgba(255, 255, 255, 0.28);
+      border: 1.5px solid #5c6068;
+      position: relative;
     }
 
-    /* Tactile grey square keypad buttons */
+    /* Tactile grey square keypad buttons (CUE 1-3, STOP) */
     .hw-key-grey {
       border-radius: 3px;
-      background: linear-gradient(180deg, #d7d9dc 0%, #c2c5ca 100%);
+      background: linear-gradient(180deg, #b8bbc0 0%, #a4a7ad 100%);
       box-shadow:
-        0 3px 0 #7f8389,
-        0 4px 7px rgba(0, 0, 0, 0.34),
-        inset 0 1px 1px rgba(255, 255, 255, 0.85);
-      border: 1px solid rgba(70, 74, 80, 0.35);
+        0 3px 0 #666a70,
+        0 4px 8px rgba(0, 0, 0, 0.36),
+        inset 0 1px 1px rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(55, 58, 64, 0.45);
       color: #1f2226;
-      font-family: 'Chakra Petch', 'Inter', sans-serif;
-      font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
       transition: transform 60ms ease, box-shadow 60ms ease, filter 120ms ease;
       cursor: pointer;
     }
@@ -276,23 +320,23 @@
     .hw-key-grey.is-pressed {
       transform: translateY(2px);
       box-shadow:
-        0 1px 0 #7f8389,
+        0 1px 0 #666a70,
         0 2px 3px rgba(0, 0, 0, 0.35),
         inset 0 1px 2px rgba(0, 0, 0, 0.25);
     }
 
+    /* Tactile black buttons (0-9, T, C, ENTER, Prev, Next) */
     .hw-key-black {
       border-radius: 3px;
-      background: linear-gradient(180deg, #2d3035 0%, #17191c 100%);
+      background: linear-gradient(180deg, #2a2d32 0%, #15171a 100%);
       box-shadow:
-        0 3px 0 #090a0c,
-        0 5px 9px rgba(0, 0, 0, 0.45),
-        inset 0 1px 1px rgba(255, 255, 255, 0.18);
-      border: 1px solid #0c0d0f;
-      color: #f0f2f5;
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+        0 3px 0 #07080a,
+        0 5px 9px rgba(0, 0, 0, 0.48),
+        inset 0 1px 1px rgba(255, 255, 255, 0.22);
+      border: 1px solid #090a0c;
+      color: #eef0f3;
+      font-family: 'Chakra Petch', 'Inter', sans-serif;
+      font-weight: 500;
       transition: transform 60ms ease, box-shadow 60ms ease;
       cursor: pointer;
     }
@@ -301,23 +345,24 @@
     .hw-key-black.is-pressed {
       transform: translateY(2px);
       box-shadow:
-        0 1px 0 #090a0c,
-        0 2px 4px rgba(0, 0, 0, 0.4),
-        inset 0 1px 3px rgba(0, 0, 0, 0.6);
+        0 1px 0 #07080a,
+        0 2px 4px rgba(0, 0, 0, 0.42),
+        inset 0 1px 3px rgba(0, 0, 0, 0.65);
     }
 
+    /* Dark navy PLAY button */
     .hw-key-navy {
       border-radius: 3px;
-      background: linear-gradient(180deg, #263956 0%, #142033 100%);
+      background: linear-gradient(180deg, #1d3150 0%, #101c2f 100%);
       box-shadow:
-        0 3px 0 #0a101a,
-        0 5px 9px rgba(0, 0, 0, 0.45),
-        inset 0 1px 1px rgba(255, 255, 255, 0.22);
-      border: 1px solid #0d1522;
+        0 3px 0 #070c14,
+        0 5px 9px rgba(0, 0, 0, 0.48),
+        inset 0 1px 1px rgba(255, 255, 255, 0.24);
+      border: 1px solid #0a121f;
       color: #eef3fa;
       font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      letter-spacing: 0.08em;
+      font-weight: 500;
+      letter-spacing: 0.06em;
       transition: transform 60ms ease, box-shadow 60ms ease;
       cursor: pointer;
     }
@@ -326,17 +371,17 @@
     .hw-key-navy.is-active {
       transform: translateY(2px);
       box-shadow:
-        0 1px 0 #0a101a,
+        0 1px 0 #070c14,
         0 2px 4px rgba(0, 0, 0, 0.45),
         inset 0 1px 3px rgba(0, 0, 0, 0.55);
     }
 
     /* Red LED digital display */
     .led-display-box {
-      background: linear-gradient(180deg, #120909 0%, #1c0c0c 50%, #110808 100%);
-      border-radius: 3px;
+      background: linear-gradient(180deg, #120808 0%, #1c0b0b 50%, #100707 100%);
+      border-radius: 2px;
       box-shadow:
-        inset 0 2px 6px rgba(0, 0, 0, 0.92),
+        inset 0 2px 6px rgba(0, 0, 0, 0.94),
         0 1px 0 rgba(255, 255, 255, 0.65);
       border: 1px solid rgba(255, 50, 40, 0.16);
     }
@@ -345,7 +390,7 @@
       font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
       color: var(--led-red);
       text-shadow: var(--led-red-glow);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       line-height: 1;
     }
 
@@ -354,7 +399,7 @@
       inset: 0;
       font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
       color: var(--led-red-dim);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.05em;
       line-height: 1;
       pointer-events: none;
     }
@@ -362,9 +407,9 @@
     /* Rotary knobs */
     .knob-collar {
       border-radius: 9999px;
-      background: linear-gradient(155deg, #9fa3a9 0%, #d2d4d8 65%, #e3e5e8 100%);
+      background: linear-gradient(155deg, #8b8f96 0%, #c8cacf 65%, #e1e3e6 100%);
       box-shadow:
-        inset 0 2px 5px rgba(0, 0, 0, 0.42),
+        inset 0 3px 6px rgba(0, 0, 0, 0.48),
         0 1px 0 rgba(255, 255, 255, 0.72);
       display: flex;
       align-items: center;
@@ -373,12 +418,12 @@
     }
 
     .knob-cap-dark {
-      width: 74%;
-      height: 74%;
+      width: 56%;
+      height: 56%;
       border-radius: 9999px;
       background: radial-gradient(circle at 35% 30%, #4b4f56 0%, #26292e 65%, #15171a 100%);
       box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.52),
+        0 3px 6px rgba(0, 0, 0, 0.58),
         inset 0 1px 1px rgba(255, 255, 255, 0.28);
       position: relative;
       cursor: ns-resize;
@@ -386,13 +431,13 @@
     }
 
     .knob-cap-light {
-      width: 74%;
-      height: 74%;
+      width: 56%;
+      height: 56%;
       border-radius: 9999px;
-      background: radial-gradient(circle at 35% 30%, #f1f2f4 0%, #c9ccd1 68%, #9ea2a8 100%);
+      background: radial-gradient(circle at 35% 30%, #f4f5f7 0%, #cfd2d6 68%, #9ea2a8 100%);
       box-shadow:
-        0 3px 6px rgba(0, 0, 0, 0.42),
-        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+        0 3px 6px rgba(0, 0, 0, 0.46),
+        inset 0 1px 1px rgba(255, 255, 255, 0.92);
       position: relative;
       cursor: ns-resize;
       touch-action: none;
@@ -400,28 +445,34 @@
 
     .knob-indicator {
       position: absolute;
-      top: 10%;
+      top: 12%;
       left: 50%;
-      width: 2px;
-      height: 24%;
+      width: 1.8px;
+      height: 22%;
       transform: translateX(-50%);
       border-radius: 2px;
     }
 
-    /* Orange switches */
-    .orange-switch-well {
-      background: linear-gradient(180deg, #8f9399 0%, #c9ccd0 100%);
+    /* Orange JOG rocker switch */
+    .jog-housing {
+      border-radius: 3px;
+      background: linear-gradient(180deg, #27292e 0%, #141619 100%);
       box-shadow:
-        inset 0 2px 4px rgba(0, 0, 0, 0.48),
-        0 1px 0 rgba(255, 255, 255, 0.7);
-      border-radius: 2px;
+        0 2px 4px rgba(0, 0, 0, 0.45),
+        inset 0 1px 1px rgba(255, 255, 255, 0.18);
+      padding: 14% 12%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .orange-paddle {
-      background: linear-gradient(180deg, #ff7b29 0%, #e8530e 100%);
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(180deg, #ff7b29 0%, #e54e0b 100%);
       box-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.42),
-        inset 0 1px 1px rgba(255, 220, 190, 0.65);
+        0 2px 3px rgba(0, 0, 0, 0.5),
+        inset 0 1px 1px rgba(255, 225, 195, 0.7);
       border-radius: 2px;
       cursor: pointer;
       transition: transform 90ms ease;
@@ -440,10 +491,10 @@
     }
   </style>
 </head>
-<body class="flex flex-col items-center justify-start min-h-dvh py-2 px-2 gap-2">
+<body>
 
   <!-- Compact PWA & Local Audio Toolbar -->
-  <header class="w-full max-w-[540px] flex items-center justify-between gap-2 px-2 py-1 rounded-md bg-[#1c1f24]/90 border border-white/10 text-zinc-200 shadow-lg z-40">
+  <header class="w-full max-w-[520px] flex items-center justify-between gap-2 px-2.5 py-1.5 rounded-md bg-[#1c1f24]/95 border border-white/10 text-zinc-200 shadow-lg z-40 shrink-0">
     <div class="flex items-center gap-1.5">
       <button
         id="btn-load-files"
@@ -483,362 +534,366 @@
   <input id="file-input-multi" type="file" accept="audio/*,image/*,.flac,.ogg,.m4a,.aac,.wav,.mp3" multiple class="hidden" />
   <input id="file-input-folder" type="file" webkitdirectory directory multiple class="hidden" />
 
-  <!-- Main Hardware Chassis -->
-  <main id="cd-chassis" class="cd-chassis" aria-label="TE-CD01 Digital Audio CD Player">
-    <!-- Top Orange Power Switch -->
+  <!-- Hardware Stage (comprende le sporgenze superiori) -->
+  <div class="chassis-stage">
+    <!-- Top Protruding White BT Button -->
+    <div
+      class="absolute z-10 rounded-t-[2px]"
+      style="left: 16.5%; top: 0%; width: 2.3%; height: 1.3%; background: linear-gradient(180deg, #f3f4f6 0%, #cfd2d6 100%); box-shadow: 0 -1px 2px rgba(255,255,255,0.5);"
+    ></div>
+
+    <!-- Top Protruding Orange Power Switch -->
     <div
       id="power-switch"
       title="POWER"
-      class="orange-switch-well absolute z-20 flex items-center justify-center"
-      style="left: 84.4%; top: 0%; width: 5.2%; height: 1.55%;"
+      class="absolute z-20 cursor-pointer flex items-end justify-center"
+      style="left: 87.2%; top: 0%; width: 3.1%; height: 1.5%;"
     >
-      <div id="power-paddle" class="orange-paddle w-[78%] h-[76%]"></div>
-    </div>
-
-    <!-- Top Silkscreen Labels -->
-    <div class="silk-label absolute z-10" style="left: 9.8%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">OUTPUT</div>
-    <div class="silk-label absolute z-10 flex items-center gap-1" style="left: 22.7%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">
-      <span class="inline-block w-[5px] h-[5px] rounded-full bg-[#1c1e22]"></span>
-      <span>BT</span>
-    </div>
-    <div class="silk-label absolute z-10" style="left: 30.8%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">SYNC OUT</div>
-    <div class="silk-label absolute z-10" style="left: 59.3%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">DATA</div>
-    <div class="silk-label absolute z-10" style="left: 71.2%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">USB</div>
-    <div class="silk-label absolute z-10" style="left: 83.2%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">POWER</div>
-
-    <!-- Top-Left 2x2 Jack Cluster -->
-    <div class="connector-hole absolute z-10" style="left: 10.6%; top: 6.2%;"></div>
-    <div class="connector-hole absolute z-10" style="left: 16.5%; top: 6.2%;"></div>
-    <div class="connector-hole absolute z-10" style="left: 10.6%; top: 10.6%;"></div>
-    <div class="connector-hole absolute z-10" style="left: 16.5%; top: 10.6%;"></div>
-
-    <!-- Top-Right 2x2 Jack Cluster -->
-    <div class="connector-hole absolute z-10" style="left: 83.2%; top: 6.2%;"></div>
-    <div class="connector-hole absolute z-10" style="left: 89.1%; top: 6.2%;"></div>
-    <div class="connector-hole absolute z-10" style="left: 83.2%; top: 10.6%;"></div>
-    <div class="connector-hole absolute z-10" style="left: 89.1%; top: 10.6%;"></div>
-
-    <!-- Side / Perimeter Screws -->
-    <div class="screw-head" style="left: 1.5%; top: 17.8%;"></div>
-    <div class="screw-head" style="left: 1.5%; top: 29.8%;"></div>
-    <div class="screw-head" style="left: 96.7%; top: 29.8%;"></div>
-
-    <!-- Recessed Circular Cutouts -->
-    <div class="recess-pocket" style="left: 76.2%; top: 12.2%; width: 14.5%; aspect-ratio: 1 / 1;"></div>
-    <div class="recess-pocket" style="left: 25.5%; top: 53.6%; width: 10.2%; aspect-ratio: 1 / 1;"></div>
-
-    <!-- Left Laser Pickup Bay -->
-    <div
-      class="absolute z-10 rounded-[3px] overflow-hidden"
-      style="left: 12.8%; top: 24.4%; width: 17.8%; height: 11.4%; background: linear-gradient(160deg, #272a2f 0%, #121417 100%); box-shadow: inset 0 2px 6px rgba(0,0,0,0.85), 0 1px 0 rgba(255,255,255,0.65);"
-    >
-      <div class="w-full h-[54%] bg-[#0b0c0e] border-b border-white/10"></div>
-      <div class="px-1.5 py-1 text-[6.5px] leading-[1.15] font-mono tracking-wider text-zinc-300/80 uppercase">
-        <div>CLASS 1 LASER</div>
-        <div>NEVER LOOK</div>
-      </div>
-    </div>
-
-    <!-- CD Drop Shadow -->
-    <div class="cd-well-shadow"></div>
-
-    <!-- Rotating Disc Assembly (Dynamic Cover Art or Default Blue CD) -->
-    <div id="cd-disc" class="cd-disc-wrapper" title="Trascina per fare scrub nella traccia">
-      <!-- Default Blue Utility CD Layer -->
-      <div id="cd-blue-layer" class="cd-blue-surface">
-        <!-- Concentric data track micro-rings -->
-        <div
-          class="absolute inset-[16%] rounded-full pointer-events-none opacity-35"
-          style="background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.16) 0px, rgba(255,255,255,0.16) 1px, transparent 1px, transparent 3px);"
-        ></div>
-
-        <!-- Technical silkscreen text on upper blue CD -->
-        <div
-          class="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none font-mono uppercase"
-          style="top: 17.5%; width: 58%; color: rgba(235, 244, 255, 0.88); font-size: clamp(6px, 1.15vw, 8.4px); line-height: 1.28; letter-spacing: 0.04em;"
-        >
-          <div class="font-bold">UTILITY COMPACT DISC</div>
-          <div>CALIBRATION TOOLS AND STAFF</div>
-          <div>AUDIO EXCERPTS RECORDED BY</div>
-          <div class="mt-0.5 font-semibold">◉ © TEENAGE ENGINEERING</div>
-          <div>2026 ALL RIGHTS RESERVED</div>
-          <div>LC-100439. TE036RE00L</div>
-        </div>
-
-        <div class="cd-sheen-overlay"></div>
-      </div>
-
-      <!-- Dynamic Artwork Layer (Embedded APIC / FLAC Picture / Local Image) -->
-      <div id="cd-cover-layer" class="cd-cover-surface hidden">
-        <img id="cd-cover-img" src="" alt="Track Artwork" class="w-full h-full object-cover" />
-        <div class="cd-sheen-overlay"></div>
-      </div>
-
-      <!-- Center Hub with DIGITAL VARISPEED & 16-BIT 44.1KHZ -->
-      <div class="cd-center-hub">
-        <svg viewBox="0 0 120 120" class="absolute inset-0 w-full h-full pointer-events-none">
-          <defs>
-            <path id="hub-arc-top" d="M 18,60 A 42,42 0 1,1 102,60" />
-            <path id="hub-arc-bottom" d="M 98,68 A 40,40 0 0,1 22,68" />
-          </defs>
-          <text fill="#e4e7ec" font-size="7.6" font-weight="700" letter-spacing="1.4" font-family="Inter, sans-serif">
-            <textPath href="#hub-arc-top" startOffset="50%" text-anchor="middle">DIGITAL VARISPEED</textPath>
-          </text>
-          <text fill="#cfd4dc" font-size="7.2" font-weight="600" letter-spacing="1.2" font-family="JetBrains Mono, monospace">
-            <textPath href="#hub-arc-bottom" startOffset="50%" text-anchor="middle">16-BIT 44.1KHZ</textPath>
-          </text>
-        </svg>
-        <div class="cd-spindle-hole"></div>
-      </div>
-    </div>
-
-    <!-- Left Numeric Keypad (7-8-9 / 4-5-6 / 1-2-3 / T-0-C) -->
-    <div
-      id="keypad-grid"
-      class="absolute z-20 grid grid-cols-3"
-      style="left: 5.5%; top: 40.5%; width: 25.2%; height: 26.8%; column-gap: 4.8%; row-gap: 3.4%;"
-    >
-      <button type="button" data-key="7" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">7</button>
-      <button type="button" data-key="8" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">8</button>
-      <button type="button" data-key="9" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">9</button>
-
-      <button type="button" data-key="4" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">4</button>
-      <button type="button" data-key="5" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">5</button>
-      <button type="button" data-key="6" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">6</button>
-
-      <button type="button" data-key="1" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">1</button>
-      <button type="button" data-key="2" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">2</button>
-      <button type="button" data-key="3" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">3</button>
-
-      <button type="button" data-key="T" class="hw-key-grey flex items-center justify-center text-[clamp(11px,2.1vw,15px)]" title="Apri TOC / Lista Tracce">T</button>
-      <button type="button" data-key="0" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">0</button>
-      <button type="button" data-key="C" class="hw-key-grey flex items-center justify-center text-[clamp(11px,2.1vw,15px)]" title="Clear / Reset / Stop">C</button>
-    </div>
-
-    <!-- Left Black ENTER Button -->
-    <button
-      id="btn-enter"
-      type="button"
-      class="hw-key-black absolute z-20 flex items-center justify-center text-[clamp(9px,1.65vw,12px)]"
-      style="left: 5.5%; top: 73.2%; width: 12.6%; height: 5.6%;"
-    >
-      ENTER
-    </button>
-
-    <!-- Vertical Stereo L / R LED Level Meter -->
-    <div
-      class="absolute z-20 flex flex-col items-center justify-between"
-      style="left: 88.5%; top: 48.5%; width: 5.8%; height: 15.5%;"
-    >
-      <div class="flex items-center justify-center gap-1.5 w-full silk-label" style="font-size: clamp(7.5px, 1.35vw, 9.5px);">
-        <span>L</span>
-        <span>R</span>
-      </div>
       <div
-        id="lr-meter-bars"
-        class="w-[68%] flex-1 mt-1 rounded-[2px] bg-[#141111] p-[2px] flex flex-col justify-between shadow-inner border border-black/40"
+        id="power-paddle"
+        class="w-full h-full rounded-t-[2px] transition-transform duration-100"
+        style="background: linear-gradient(180deg, #ff7b29 0%, #e54e0b 100%); box-shadow: inset 0 1px 1px rgba(255,225,195,0.75);"
+      ></div>
+    </div>
+
+    <!-- Main Hardware Chassis -->
+    <main id="cd-chassis" class="cd-chassis" aria-label="TE-CD01 Digital Audio CD Player">
+
+      <!-- Top Silkscreen Labels -->
+      <div class="silk-label absolute z-10" style="left: 6.2%; top: 1.5%; font-size: clamp(7px, 1.35vw, 9.5px);">OUTPUT</div>
+      <div class="silk-label absolute z-10 flex items-center gap-1" style="left: 16.4%; top: 1.5%; font-size: clamp(7px, 1.35vw, 9.5px);">
+        <span class="inline-block w-[4.5px] h-[4.5px] rounded-full bg-[#383b42]"></span>
+        <span>BT</span>
+      </div>
+      <div class="silk-label absolute z-10" style="left: 26.8%; top: 1.5%; font-size: clamp(7px, 1.35vw, 9.5px);">SYNC OUT</div>
+      <div class="silk-label absolute z-10" style="left: 59.5%; top: 1.5%; font-size: clamp(7px, 1.35vw, 9.5px);">DATA</div>
+      <div class="silk-label absolute z-10" style="left: 73.5%; top: 1.5%; font-size: clamp(7px, 1.35vw, 9.5px);">USB</div>
+      <div class="silk-label absolute z-10" style="left: 85.8%; top: 1.5%; font-size: clamp(7px, 1.35vw, 9.5px);">POWER</div>
+
+      <!-- Top-Left 2x2 Jack Cluster -->
+      <div class="connector-hole" style="left: 3.8%; top: 4.5%;"></div>
+      <div class="connector-hole" style="left: 9.2%; top: 4.5%;"></div>
+      <div class="connector-hole" style="left: 3.8%; top: 8.5%;"></div>
+      <div class="connector-hole" style="left: 9.2%; top: 8.5%;"></div>
+
+      <!-- Top-Right 2x2 Jack Cluster -->
+      <div class="connector-hole" style="left: 87.3%; top: 4.5%;"></div>
+      <div class="connector-hole" style="left: 92.7%; top: 4.5%;"></div>
+      <div class="connector-hole" style="left: 87.3%; top: 8.5%;"></div>
+      <div class="connector-hole" style="left: 92.7%; top: 8.5%;"></div>
+
+      <!-- Left & Right Perimeter Screws -->
+      <div class="screw-head" style="left: 3.8%; top: 22.8%;"></div>
+      <div class="screw-head" style="left: 92.7%; top: 22.8%;"></div>
+
+      <!-- Recessed Circular Cutouts -->
+      <div class="recess-pocket" style="left: 77.6%; top: 11.4%; width: 14.8%; aspect-ratio: 1 / 1;"></div>
+      <div class="recess-pocket" style="left: 32.0%; top: 49.4%; width: 12.8%; aspect-ratio: 1 / 1;"></div>
+
+      <!-- Left Laser Pickup Bay -->
+      <div class="laser-bay">
+        <div class="w-full h-[22%] mt-[32%] bg-[#090a0c] border-y border-white/10"></div>
+        <div class="px-2 pt-2 text-[5.5px] leading-[1.2] font-mono tracking-wider text-zinc-400/85 uppercase">
+          <div>CLASS 1</div>
+          <div>NEVER L</div>
+        </div>
+      </div>
+
+      <!-- CD Drop Shadow -->
+      <div class="cd-well-shadow"></div>
+
+      <!-- Rotating Disc Assembly -->
+      <div id="cd-disc" class="cd-disc-wrapper" title="Trascina per fare scrub nella traccia">
+        <!-- Default Blue Utility CD Layer -->
+        <div id="cd-blue-layer" class="cd-blue-surface">
+          <div
+            class="absolute inset-[16%] rounded-full pointer-events-none opacity-35"
+            style="background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.16) 0px, rgba(255,255,255,0.16) 1px, transparent 1px, transparent 3px);"
+          ></div>
+
+          <!-- Technical silkscreen text on upper blue CD -->
+          <div
+            class="absolute left-1/2 -translate-x-1/2 text-left pointer-events-none font-mono uppercase"
+            style="top: 15.8%; width: 46%; color: rgba(235, 244, 255, 0.88); font-size: clamp(5.2px, 1.02vw, 7.6px); line-height: 1.26; letter-spacing: 0.03em;"
+          >
+            <div class="font-bold">UTILITY COMPACT DISC</div>
+            <div>CALIBRATION TOOLS AND STAFF</div>
+            <div>AUDIO EXCERPTS RECORDED BY</div>
+            <div class="mt-0.5 font-semibold">◉ © TEENAGE ENGINEERING</div>
+            <div>2026 ALL RIGHTS RESERVED</div>
+            <div>LC-100439. TE036RE00L</div>
+          </div>
+
+          <div class="cd-sheen-overlay"></div>
+        </div>
+
+        <!-- Dynamic Artwork Layer -->
+        <div id="cd-cover-layer" class="cd-cover-surface hidden">
+          <img id="cd-cover-img" src="" alt="Track Artwork" class="w-full h-full object-cover" />
+          <div class="cd-sheen-overlay"></div>
+        </div>
+
+        <!-- Center Hub -->
+        <div class="cd-center-hub">
+          <svg viewBox="0 0 120 120" class="absolute inset-0 w-full h-full pointer-events-none">
+            <defs>
+              <path id="hub-arc-top" d="M 18,60 A 42,42 0 1,1 102,60" />
+              <path id="hub-arc-bottom" d="M 98,68 A 40,40 0 0,1 22,68" />
+            </defs>
+            <text fill="#e4e7ec" font-size="7.4" font-weight="700" letter-spacing="1.3" font-family="Inter, sans-serif">
+              <textPath href="#hub-arc-top" startOffset="50%" text-anchor="middle">DIGITAL VARISPEED</textPath>
+            </text>
+            <text fill="#cfd4dc" font-size="7.0" font-weight="600" letter-spacing="1.1" font-family="JetBrains Mono, monospace">
+              <textPath href="#hub-arc-bottom" startOffset="50%" text-anchor="middle">16-BIT 44.1KHZ</textPath>
+            </text>
+          </svg>
+          <div class="cd-spindle-hole"></div>
+        </div>
+      </div>
+
+      <!-- Left Black Numeric Keypad (7-8-9 / 4-5-6 / 1-2-3 / T-0-C) -->
+      <div
+        id="keypad-grid"
+        class="absolute z-20 grid grid-cols-3"
+        style="left: 5.5%; top: 47.4%; width: 22.8%; height: 22.8%; column-gap: 11%; row-gap: 11%;"
       >
-        <!-- 10 LED segments generated via JS (top = peak/clip, bottom = low) -->
-      </div>
-    </div>
+        <button type="button" data-key="7" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">7</button>
+        <button type="button" data-key="8" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">8</button>
+        <button type="button" data-key="9" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">9</button>
 
-    <!-- Red LED Digital Display Cluster -->
-    <div
-      class="absolute z-20 flex items-start gap-[2.2%]"
-      style="left: 31.8%; top: 59.5%; width: 54.8%; height: 6.2%;"
-    >
-      <!-- TRACK / INDEX / MIN / SEC Group -->
-      <div class="flex-1 h-full flex flex-col justify-between">
-        <div class="grid grid-cols-4 text-center silk-label" style="font-size: clamp(6.5px, 1.15vw, 8.5px); letter-spacing: 0.04em;">
-          <span>TRACK</span>
-          <span>INDEX</span>
-          <span>MIN</span>
-          <span>SEC</span>
-        </div>
-        <div class="led-display-box w-full h-[74%] px-1.5 flex items-center justify-between relative overflow-hidden">
-          <div class="relative flex items-center justify-between w-full text-[clamp(13px,2.55vw,18px)]">
-            <span class="led-ghost">888 888 888 888</span>
-            <span id="disp-track" class="led-digits relative">009</span>
-            <span id="disp-index" class="led-digits relative">023</span>
-            <span id="disp-min" class="led-digits relative">008</span>
-            <span id="disp-sec" class="led-digits relative">056</span>
-          </div>
-        </div>
+        <button type="button" data-key="4" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">4</button>
+        <button type="button" data-key="5" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">5</button>
+        <button type="button" data-key="6" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">6</button>
+
+        <button type="button" data-key="1" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">1</button>
+        <button type="button" data-key="2" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">2</button>
+        <button type="button" data-key="3" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">3</button>
+
+        <button type="button" data-key="T" class="hw-key-black flex items-center justify-center text-[clamp(10px,1.95vw,14px)]" title="Apri TOC / Lista Tracce">T</button>
+        <button type="button" data-key="0" class="hw-key-black flex items-center justify-center text-[clamp(11px,2.1vw,15px)]">0</button>
+        <button type="button" data-key="C" class="hw-key-black flex items-center justify-center text-[clamp(10px,1.95vw,14px)]" title="Clear / Reset / Stop">C</button>
       </div>
 
-      <!-- VARISPEED Display -->
-      <div class="w-[18.5%] h-full flex flex-col justify-between">
-        <div class="text-center silk-label truncate" style="font-size: clamp(6px, 1.05vw, 7.8px); letter-spacing: 0.02em;">VARISPEED</div>
-        <div class="led-display-box w-full h-[74%] px-1 flex items-center justify-center relative overflow-hidden">
-          <div class="relative flex items-center justify-center w-full text-[clamp(13px,2.55vw,18px)]">
-            <span class="led-ghost text-center w-full">888</span>
-            <span id="disp-varispeed" class="led-digits relative">100</span>
-          </div>
-        </div>
-      </div>
+      <!-- Left Black ENTER Button -->
+      <button
+        id="btn-enter"
+        type="button"
+        class="hw-key-black absolute z-20 flex items-start justify-start p-[1.1%] text-[clamp(7.5px,1.35vw,10px)] tracking-wider"
+        style="left: 5.5%; top: 77.6%; width: 10.6%; height: 6.4%;"
+      >
+        ENTER
+      </button>
 
-      <!-- LINE LEVEL Display -->
-      <div class="w-[18.5%] h-full flex flex-col justify-between">
-        <div class="text-center silk-label truncate" style="font-size: clamp(6px, 1.05vw, 7.8px); letter-spacing: 0.02em;">LINE LEVEL</div>
-        <div class="led-display-box w-full h-[74%] px-1 flex items-center justify-center relative overflow-hidden">
-          <div class="relative flex items-center justify-center w-full text-[clamp(13px,2.55vw,18px)]">
-            <span class="led-ghost text-center w-full">888</span>
-            <span id="disp-level" class="led-digits relative">058</span>
-          </div>
+      <!-- Vertical Stereo L / R LED Level Meter -->
+      <div
+        class="absolute z-20 flex flex-col items-center justify-between"
+        style="left: 86.2%; top: 53.5%; width: 5.2%; height: 10.4%;"
+      >
+        <div class="flex items-center justify-around w-full silk-label" style="font-size: clamp(6.5px, 1.2vw, 8.5px);">
+          <span>L</span>
+          <span>R</span>
         </div>
-      </div>
-    </div>
-    <!-- CUE 1 / CUE 2 / CUE 3 Buttons with LEDs -->
-    <div
-      class="absolute z-20 flex items-end justify-between"
-      style="left: 31.8%; top: 70.5%; width: 35.8%; height: 9.2%;"
-    >
-      <!-- CUE 1 -->
-      <div class="w-[29%] h-full flex flex-col items-center justify-between">
-        <div class="flex items-center gap-1 silk-label" style="font-size: clamp(7px, 1.2vw, 9px);">
-          <span id="cue-led-1" class="w-[6px] h-[6px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
-          <span>CUE</span>
-        </div>
-        <button
-          id="btn-cue-1"
-          type="button"
-          class="hw-key-grey w-full h-[72%] flex items-center justify-center text-[clamp(12px,2.2vw,15px)]"
-          title="Tap breve: salva/vai a CUE 1 | Pressione lunga o C: cancella"
+        <div
+          id="lr-meter-bars"
+          class="w-[74%] flex-1 mt-1 rounded-[2px] bg-[#141111] p-[2px] flex flex-col justify-between shadow-inner border border-black/40"
         >
-          1
+          <!-- 10 stereo LED rows generated via JS -->
+        </div>
+      </div>
+
+      <!-- Red LED Digital Display Cluster -->
+      <div
+        class="absolute z-20 flex items-end justify-between gap-[2.8%]"
+        style="left: 33.4%; top: 64.6%; width: 59.8%; height: 5.6%;"
+      >
+        <!-- TRACK / INDEX / MIN / SEC Group -->
+        <div class="w-[62%] h-full flex flex-col justify-between">
+          <div class="grid grid-cols-4 text-left px-1 silk-label border-b border-black/35 pb-[2px]" style="font-size: clamp(6px, 1.05vw, 8px); letter-spacing: 0.03em;">
+            <span>TRACK</span>
+            <span>INDEX</span>
+            <span>MIN</span>
+            <span>SEC</span>
+          </div>
+          <div class="led-display-box w-full h-[68%] px-1.5 flex items-center justify-between relative overflow-hidden">
+            <div class="relative flex items-center justify-between w-full text-[clamp(13px,2.5vw,18px)]">
+              <span class="led-ghost">888 888 888 888</span>
+              <span id="disp-track" class="led-digits relative">009</span>
+              <span id="disp-index" class="led-digits relative">023</span>
+              <span id="disp-min" class="led-digits relative">008</span>
+              <span id="disp-sec" class="led-digits relative">056</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- VARISPEED Display -->
+        <div class="w-[16.5%] h-full flex flex-col justify-between">
+          <div class="text-center silk-label truncate pb-[2px]" style="font-size: clamp(5.8px, 1vw, 7.6px); letter-spacing: 0.02em;">VARISPEED</div>
+          <div class="led-display-box w-full h-[68%] px-1 flex items-center justify-center relative overflow-hidden">
+            <div class="relative flex items-center justify-center w-full text-[clamp(13px,2.5vw,18px)]">
+              <span class="led-ghost text-center w-full">888</span>
+              <span id="disp-varispeed" class="led-digits relative">100</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LINE LEVEL Display -->
+        <div class="w-[16.5%] h-full flex flex-col justify-between">
+          <div class="text-center silk-label truncate pb-[2px]" style="font-size: clamp(5.8px, 1vw, 7.6px); letter-spacing: 0.02em;">LINE LEVEL</div>
+          <div class="led-display-box w-full h-[68%] px-1 flex items-center justify-center relative overflow-hidden">
+            <div class="relative flex items-center justify-center w-full text-[clamp(13px,2.5vw,18px)]">
+              <span class="led-ghost text-center w-full">888</span>
+              <span id="disp-level" class="led-digits relative">058</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-Column Control Grid: Row 1 (CUE 1, CUE 2, CUE 3, VARISPEED, LEVEL) -->
+      <div
+        class="absolute z-20 grid grid-cols-5 items-end"
+        style="left: 33.4%; top: 75.2%; width: 59.8%; height: 8.8%; column-gap: 4.5%;"
+      >
+        <!-- CUE 1 -->
+        <div class="h-full flex flex-col items-center justify-between">
+          <div class="flex items-center gap-1 silk-label" style="font-size: clamp(6.5px, 1.15vw, 8.5px);">
+            <span id="cue-led-1" class="w-[5.5px] h-[5.5px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
+            <span>CUE</span>
+          </div>
+          <button
+            id="btn-cue-1"
+            type="button"
+            class="hw-key-grey w-full aspect-square flex items-start justify-start p-[12%] text-[clamp(10px,1.9vw,14px)]"
+            title="Tap breve: salva/vai a CUE 1 | Pressione lunga o C: cancella"
+          >
+            1
+          </button>
+        </div>
+
+        <!-- CUE 2 -->
+        <div class="h-full flex flex-col items-center justify-between">
+          <div class="flex items-center gap-1 silk-label" style="font-size: clamp(6.5px, 1.15vw, 8.5px);">
+            <span id="cue-led-2" class="w-[5.5px] h-[5.5px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
+            <span>CUE</span>
+          </div>
+          <button
+            id="btn-cue-2"
+            type="button"
+            class="hw-key-grey w-full aspect-square flex items-start justify-start p-[12%] text-[clamp(10px,1.9vw,14px)]"
+            title="Tap breve: salva/vai a CUE 2 | Pressione lunga o C: cancella"
+          >
+            2
+          </button>
+        </div>
+
+        <!-- CUE 3 -->
+        <div class="h-full flex flex-col items-center justify-between">
+          <div class="flex items-center gap-1 silk-label" style="font-size: clamp(6.5px, 1.15vw, 8.5px);">
+            <span id="cue-led-3" class="w-[5.5px] h-[5.5px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
+            <span>CUE</span>
+          </div>
+          <button
+            id="btn-cue-3"
+            type="button"
+            class="hw-key-grey w-full aspect-square flex items-start justify-start p-[12%] text-[clamp(10px,1.9vw,14px)]"
+            title="Tap breve: salva/vai a CUE 3 | Pressione lunga o C: cancella"
+          >
+            3
+          </button>
+        </div>
+
+        <!-- VARISPEED Knob -->
+        <div class="h-full flex flex-col items-center justify-between">
+          <div class="silk-label truncate w-full text-center" style="font-size: clamp(5.8px, 1vw, 7.6px);">VARISPEED</div>
+          <div class="knob-collar w-full aspect-square">
+            <div id="knob-varispeed" class="knob-cap-dark" title="Trascina su/giù per VARISPEED (50% - 150%)">
+              <div class="knob-indicator bg-zinc-200"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEVEL Knob -->
+        <div class="h-full flex flex-col items-center justify-between">
+          <div class="silk-label truncate w-full text-center" style="font-size: clamp(5.8px, 1vw, 7.6px);">LEVEL</div>
+          <div class="knob-collar w-full aspect-square">
+            <div id="knob-level" class="knob-cap-light" title="Trascina su/giù per LINE LEVEL (0% - 100%)">
+              <div class="knob-indicator bg-zinc-700"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-Column Control Grid: Row 2 (JOG, |<, >|, STOP, PLAY) -->
+      <div
+        class="absolute z-20 grid grid-cols-5 items-start"
+        style="left: 33.4%; top: 87.2%; width: 59.8%; height: 8.4%; column-gap: 4.5%;"
+      >
+        <!-- Orange JOG Switch -->
+        <div class="h-full flex flex-col items-center justify-start gap-1.5 pt-[8%]">
+          <div class="jog-housing w-[84%] h-[46%]">
+            <div id="jog-paddle" class="orange-paddle" title="JOG: clicca per salto rapido +5s (o Shift+clic -5s)"></div>
+          </div>
+          <span class="silk-label" style="font-size: clamp(6.5px, 1.15vw, 8.5px);">JOG</span>
+        </div>
+
+        <!-- Previous Track |< -->
+        <button
+          id="btn-prev"
+          type="button"
+          class="hw-key-black w-full aspect-square flex items-start justify-start p-[14%]"
+          title="Traccia precedente"
+        >
+          <svg viewBox="0 0 24 24" class="w-[42%] h-[42%] fill-current">
+            <path d="M5 6h2.4v12H5zm3.6 6 9.4 6V6z" />
+          </svg>
+        </button>
+
+        <!-- Next Track >| -->
+        <button
+          id="btn-next"
+          type="button"
+          class="hw-key-black w-full aspect-square flex items-start justify-start p-[14%]"
+          title="Traccia successiva"
+        >
+          <svg viewBox="0 0 24 24" class="w-[42%] h-[42%] fill-current">
+            <path d="M6 18l9.4-6L6 6v12zM16.6 6v12H19V6h-2.4z" />
+          </svg>
+        </button>
+
+        <!-- STOP -->
+        <button
+          id="btn-stop"
+          type="button"
+          class="hw-key-grey w-full aspect-square flex items-start justify-start p-[13%] text-[clamp(7.5px,1.35vw,10px)] tracking-wider"
+        >
+          STOP
+        </button>
+
+        <!-- PLAY -->
+        <button
+          id="btn-play"
+          type="button"
+          class="hw-key-navy w-full aspect-square flex items-start justify-start p-[13%] text-[clamp(7.5px,1.35vw,10px)] tracking-wider"
+        >
+          PLAY
         </button>
       </div>
 
-      <!-- CUE 2 -->
-      <div class="w-[29%] h-full flex flex-col items-center justify-between">
-        <div class="flex items-center gap-1 silk-label" style="font-size: clamp(7px, 1.2vw, 9px);">
-          <span id="cue-led-2" class="w-[6px] h-[6px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
-          <span>CUE</span>
-        </div>
-        <button
-          id="btn-cue-2"
-          type="button"
-          class="hw-key-grey w-full h-[72%] flex items-center justify-center text-[clamp(12px,2.2vw,15px)]"
-          title="Tap breve: salva/vai a CUE 2 | Pressione lunga o C: cancella"
-        >
-          2
-        </button>
+      <!-- Bottom Right PHONES Label -->
+      <div class="absolute z-20" style="left: 74.2%; top: 96.4%;">
+        <span class="silk-label" style="font-size: clamp(7px, 1.3vw, 9.5px);">PHONES</span>
       </div>
 
-      <!-- CUE 3 -->
-      <div class="w-[29%] h-full flex flex-col items-center justify-between">
-        <div class="flex items-center gap-1 silk-label" style="font-size: clamp(7px, 1.2vw, 9px);">
-          <span id="cue-led-3" class="w-[6px] h-[6px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
-          <span>CUE</span>
-        </div>
-        <button
-          id="btn-cue-3"
-          type="button"
-          class="hw-key-grey w-full h-[72%] flex items-center justify-center text-[clamp(12px,2.2vw,15px)]"
-          title="Tap breve: salva/vai a CUE 3 | Pressione lunga o C: cancella"
-        >
-          3
-        </button>
-      </div>
-    </div>
-
-    <!-- Rotary Knobs: VARISPEED & LEVEL -->
-    <div
-      class="absolute z-20 flex items-end justify-between"
-      style="left: 70.6%; top: 70.5%; width: 23.6%; height: 9.2%;"
-    >
-      <!-- VARISPEED Knob -->
-      <div class="w-[45%] h-full flex flex-col items-center justify-between">
-        <div class="silk-label truncate w-full text-center" style="font-size: clamp(6px, 1.05vw, 7.8px);">VARISPEED</div>
-        <div class="knob-collar w-[74%] aspect-square">
-          <div id="knob-varispeed" class="knob-cap-dark" title="Trascina su/giù per VARISPEED (50% - 150%)">
-            <div class="knob-indicator bg-zinc-200"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- LEVEL Knob -->
-      <div class="w-[45%] h-full flex flex-col items-center justify-between">
-        <div class="silk-label truncate w-full text-center" style="font-size: clamp(6px, 1.05vw, 7.8px);">LEVEL</div>
-        <div class="knob-collar w-[74%] aspect-square">
-          <div id="knob-level" class="knob-cap-light" title="Trascina su/giù per LINE LEVEL (0% - 100%)">
-            <div class="knob-indicator bg-zinc-700"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Transport Row: JOG | |< | >| | STOP | PLAY -->
-    <div
-      class="absolute z-20 flex items-start justify-between"
-      style="left: 31.8%; top: 84.5%; width: 62.4%; height: 6.4%;"
-    >
-      <!-- Orange JOG Switch -->
-      <div class="w-[12.2%] h-full flex flex-col items-center justify-between">
-        <div class="orange-switch-well w-full h-[76%] flex items-center justify-center">
-          <div id="jog-paddle" class="orange-paddle w-[76%] h-[78%]" title="JOG: clicca per salto rapido +5s (o Shift+clic -5s)"></div>
-        </div>
-        <span class="silk-label" style="font-size: clamp(7px, 1.25vw, 9px);">JOG</span>
-      </div>
-
-      <!-- Previous Track |< -->
-      <button
-        id="btn-prev"
-        type="button"
-        class="hw-key-grey w-[16.8%] h-[76%] flex items-center justify-center"
-        title="Traccia precedente"
+      <!-- Drag & Drop Overlay -->
+      <div
+        id="drop-overlay"
+        class="hidden absolute inset-0 z-30 bg-zinc-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-orange-400 rounded-[3px] pointer-events-none"
       >
-        <svg viewBox="0 0 24 24" class="w-[46%] h-[46%] fill-current">
-          <path d="M6 6h2.4v12H6zm3.6 6 8.4 6V6z" />
-        </svg>
-      </button>
-
-      <!-- Next Track >| -->
-      <button
-        id="btn-next"
-        type="button"
-        class="hw-key-grey w-[16.8%] h-[76%] flex items-center justify-center"
-        title="Traccia successiva"
-      >
-        <svg viewBox="0 0 24 24" class="w-[46%] h-[46%] fill-current">
-          <path d="M6 18l8.4-6L6 6v12zM15.6 6v12H18V6h-2.4z" />
-        </svg>
-      </button>
-
-      <!-- STOP -->
-      <button
-        id="btn-stop"
-        type="button"
-        class="hw-key-grey w-[16.8%] h-[76%] flex items-center justify-center text-[clamp(8.5px,1.5vw,11px)] tracking-wider"
-      >
-        STOP
-      </button>
-
-      <!-- PLAY -->
-      <button
-        id="btn-play"
-        type="button"
-        class="hw-key-navy w-[22.5%] h-[76%] flex items-center justify-center text-[clamp(8.5px,1.5vw,11px)] tracking-wider"
-      >
-        PLAY
-      </button>
-    </div>
-
-    <!-- Bottom Right PHONES Label & Jack -->
-    <div class="absolute z-20 flex items-center gap-2" style="left: 77.5%; top: 94.8%;">
-      <span class="silk-label" style="font-size: clamp(8px, 1.45vw, 10.5px);">PHONES</span>
-    </div>
-
-    <!-- Drag & Drop Overlay -->
-    <div
-      id="drop-overlay"
-      class="hidden absolute inset-0 z-30 bg-zinc-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-orange-400 rounded-[6px] pointer-events-none"
-    >
-      <div class="text-orange-400 text-2xl mb-1">♫</div>
-      <div class="text-white font-semibold text-sm tracking-wide">RILASCIA FILE AUDIO O COPERTINE</div>
-      <div class="text-zinc-300 text-xs mt-1">MP3, WAV, FLAC, OGG, M4A, AAC • JPG, PNG, WEBP</div>
-    </div>
-  </main>
+        <div class="text-orange-400 text-2xl mb-1">♫</div>
+        <div class="text-white font-semibold text-sm tracking-wide">RILASCIA FILE AUDIO O COPERTINE</div>
+        <div class="text-zinc-300 text-xs mt-1">MP3, WAV, FLAC, OGG, M4A, AAC • JPG, PNG, WEBP</div>
+      </div>
+    </main>
+  </div>
 
   <!-- TOC / Tracklist Modal (Triggered by keypad 'T') -->
   <div
@@ -862,16 +917,15 @@
       <div id="toc-list" class="toc-scroll overflow-y-auto divide-y divide-white/5 flex-1"></div>
     </div>
   </div>
-
   <script>
     // =========================================================================
-    // 1. PWA MANIFEST & SERVICE WORKER REGISTRATION (PREVIEW-SAFE)
+    // 1. PWA MANIFEST & SERVICE WORKER REGISTRATION
     // =========================================================================
     (function setupPWA() {
       const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <rect width="512" height="512" rx="64" fill="#c9cbce"/>
-        <circle cx="315" cy="185" r="145" fill="#1d4475"/>
-        <circle cx="315" cy="185" r="42" fill="#2d3035" stroke="#8a8f96" stroke-width="6"/>
+        <rect width="512" height="512" rx="64" fill="#c3c5c8"/>
+        <circle cx="315" cy="185" r="145" fill="#1f4478"/>
+        <circle cx="315" cy="185" r="42" fill="#23262b" stroke="#8a8f96" stroke-width="6"/>
         <circle cx="315" cy="185" r="15" fill="#0d0f12"/>
         <rect x="46" y="340" width="420" height="72" rx="8" fill="#160b0b"/>
         <text x="72" y="388" fill="#ff2a1f" font-family="monospace" font-size="38" font-weight="bold">009 023 100</text>
@@ -886,7 +940,7 @@
         scope: './',
         display: 'standalone',
         orientation: 'portrait',
-        theme_color: '#c9cbce',
+        theme_color: '#171a1f',
         background_color: '#171a1f',
         icons: [
           { src: iconDataUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
@@ -901,7 +955,6 @@
       linkEl.href = manifestUrl;
       document.head.appendChild(linkEl);
 
-      // Install prompt handling
       let deferredPrompt = null;
       const installBtn = document.getElementById('btn-install-pwa');
       const statusBadge = document.getElementById('pwa-status-badge');
@@ -925,10 +978,9 @@
         statusBadge.textContent = 'INSTALLED';
       });
 
-      // Service Worker registration with graceful preview fallback
       if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
         const swCode = `
-          const CACHE_NAME = 'te-cd01-v1';
+          const CACHE_NAME = 'te-cd01-v2';
           self.addEventListener('install', (event) => {
             self.skipWaiting();
             event.waitUntil(
@@ -967,7 +1019,7 @@
     })();
 
     // =========================================================================
-    // 2. SYNTHETIC CALIBRATION WAV GENERATOR (BUILT-IN DEFAULT TRACK)
+    // 2. SYNTHETIC CALIBRATION WAV GENERATOR
     // =========================================================================
     function createCalibrationWavUrl() {
       const sampleRate = 22050;
@@ -985,8 +1037,8 @@
       writeStr(8, 'WAVE');
       writeStr(12, 'fmt ');
       view.setUint32(16, 16, true);
-      view.setUint16(20, 1, true); // PCM
-      view.setUint16(22, 1, true); // Mono
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
       view.setUint32(24, sampleRate, true);
       view.setUint32(28, sampleRate * 2, true);
       view.setUint16(32, 2, true);
@@ -1017,7 +1069,6 @@
         const headerSlice = await file.slice(0, 262144).arrayBuffer();
         const bytes = new Uint8Array(headerSlice);
 
-        // Check FLAC ("fLaC")
         if (bytes[0] === 0x66 && bytes[1] === 0x4c && bytes[2] === 0x61 && bytes[3] === 0x43) {
           let pos = 4;
           while (pos + 4 < bytes.length) {
@@ -1033,7 +1084,7 @@
               const mimeType = new TextDecoder().decode(bytes.slice(dataStart + cursor, dataStart + cursor + mimeLen)) || 'image/jpeg';
               cursor += mimeLen;
               const descLen = view.getUint32(cursor, false);
-              cursor += 4 + descLen + 16; // skip desc + width, height, depth, colors
+              cursor += 4 + descLen + 16;
               const picLen = view.getUint32(cursor, false);
               cursor += 4;
               const picBytes = bytes.slice(dataStart + cursor, dataStart + cursor + picLen);
@@ -1046,7 +1097,6 @@
           }
         }
 
-        // Check ID3v2 ("ID3")
         if (bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) {
           const version = bytes[3];
           const tagSize =
@@ -1072,7 +1122,7 @@
               const mimeType = mimeEnd > p
                 ? (new TextDecoder().decode(bytes.slice(p, mimeEnd)) || 'image/jpeg')
                 : 'image/jpeg';
-              p = (mimeEnd >= 0 ? mimeEnd + 1 : p) + 1; // skip picture type byte
+              p = (mimeEnd >= 0 ? mimeEnd + 1 : p) + 1;
 
               if (encoding === 0 || encoding === 3) {
                 const descEnd = bytes.indexOf(0x00, p);
@@ -1095,9 +1145,7 @@
             cursor = frameDataStart + frameSize;
           }
         }
-      } catch (_) {
-        // Fallback to default blue CD
-      }
+      } catch (_) {}
       return null;
     }
 
@@ -1117,8 +1165,8 @@
       ],
       currentIndex: 0,
       isPlaying: false,
-      varispeed: 100, // 50..150%
-      level: 58,      // 0..100%
+      varispeed: 100,
+      level: 58,
       keypadBuffer: '',
       discAngle: 0,
       isScrubbingDisc: false,
@@ -1158,19 +1206,26 @@
       }
     }
 
-    // Build 10 LED meter segments
+    // Build 10 stereo LED rows (2 columns L / R)
     const meterContainer = document.getElementById('lr-meter-bars');
-    const meterSegments = [];
+    const meterRows = [];
     for (let i = 0; i < 10; i++) {
-      const seg = document.createElement('div');
-      seg.className = 'w-full h-[7.2%] rounded-[1px] transition-opacity duration-75';
-      seg.style.backgroundColor = i < 2 ? '#ff2a1f' : i < 5 ? '#ff7b29' : '#ff3b2f';
-      seg.style.opacity = '0.14';
-      meterContainer.appendChild(seg);
-      meterSegments.push(seg);
+      const row = document.createElement('div');
+      row.className = 'w-full h-[7%] flex gap-[2px]';
+      const segL = document.createElement('div');
+      const segR = document.createElement('div');
+      [segL, segR].forEach((seg) => {
+        seg.className = 'flex-1 h-full rounded-[0.5px] transition-opacity duration-75';
+        seg.style.backgroundColor = '#ff2a1f';
+        seg.style.boxShadow = '0 0 4px rgba(255, 42, 31, 0.5)';
+        seg.style.opacity = '0.16';
+      });
+      row.appendChild(segL);
+      row.appendChild(segR);
+      meterContainer.appendChild(row);
+      meterRows.push([segL, segR]);
     }
 
-    // DOM references
     const dispTrack = document.getElementById('disp-track');
     const dispIndex = document.getElementById('disp-index');
     const dispMin = document.getElementById('disp-min');
@@ -1315,7 +1370,6 @@
     document.getElementById('btn-prev').addEventListener('click', () => loadTrackAt(state.currentIndex - 1, state.isPlaying));
     document.getElementById('btn-next').addEventListener('click', () => loadTrackAt(state.currentIndex + 1, state.isPlaying));
 
-    // JOG switch: quick jump +5s (or -5s with Shift)
     const jogPaddle = document.getElementById('jog-paddle');
     jogPaddle.addEventListener('click', (e) => {
       if (!state.powered) return;
@@ -1327,18 +1381,16 @@
       syncDisplays();
     });
 
-    // POWER toggle
     const powerPaddle = document.getElementById('power-paddle');
     document.getElementById('power-switch').addEventListener('click', () => {
       state.powered = !state.powered;
-      powerPaddle.style.transform = state.powered ? 'translateY(0)' : 'translateY(3px)';
+      powerPaddle.style.transform = state.powered ? 'translateY(0)' : 'translateY(4px)';
       if (!state.powered) {
         stopAudio();
       }
       syncDisplays();
     });
 
-    // Keypad buttons
     document.querySelectorAll('#keypad-grid [data-key]').forEach((btn) => {
       btn.addEventListener('click', () => {
         if (!state.powered) return;
@@ -1360,7 +1412,6 @@
       });
     });
 
-    // ENTER button: select matching track number or index
     document.getElementById('btn-enter').addEventListener('click', () => {
       if (!state.powered || !state.keypadBuffer) return;
       const targetNum = parseInt(state.keypadBuffer, 10);
@@ -1375,7 +1426,6 @@
       }
     });
 
-    // CUE 1 / CUE 2 / CUE 3: short tap saves/jumps, long press (550ms) clears
     [1, 2, 3].forEach((slot) => {
       const btn = document.getElementById(`btn-cue-${slot}`);
       let pressTimer = null;
@@ -1420,7 +1470,6 @@
       });
     });
 
-    // Rotary knob drag handler
     function attachKnobDrag(el, onDelta) {
       let startY = 0;
       let dragging = false;
@@ -1457,7 +1506,6 @@
       updateKnobsVisual();
     });
 
-    // CD Disc pointer scrubbing
     function getPointerAngle(e) {
       const rect = cdDisc.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
@@ -1572,7 +1620,6 @@
       }
     });
 
-    // TOC Modal
     function openToc() {
       renderToc();
       tocModal.classList.remove('hidden');
@@ -1610,7 +1657,6 @@
       });
     }
 
-    // Auto-advance to next track
     audioEl.addEventListener('ended', () => {
       if (state.tracks.length > 1) {
         loadTrackAt(state.currentIndex + 1, true);
@@ -1637,30 +1683,34 @@
 
       syncDisplays();
 
-      // Update L/R LED segments
-      let levelNorm = 0;
+      let levelL = 0;
+      let levelR = 0;
       if (state.powered && state.isPlaying) {
         if (analyserNode) {
           analyserNode.getByteFrequencyData(freqData);
-          let sum = 0;
-          for (let i = 0; i < 48; i++) sum += freqData[i];
-          levelNorm = Math.min(1, (sum / (48 * 255)) * 1.9 * (state.level / 58));
+          let sumL = 0;
+          let sumR = 0;
+          for (let i = 0; i < 24; i++) sumL += freqData[i];
+          for (let i = 24; i < 48; i++) sumR += freqData[i];
+          levelL = Math.min(1, (sumL / (24 * 255)) * 1.95 * (state.level / 58));
+          levelR = Math.min(1, (sumR / (24 * 255)) * 2.15 * (state.level / 58));
         } else {
-          levelNorm = (0.45 + 0.35 * Math.sin(now * 0.012)) * (state.level / 100);
+          levelL = (0.45 + 0.35 * Math.sin(now * 0.012)) * (state.level / 100);
+          levelR = (0.50 + 0.35 * Math.cos(now * 0.014)) * (state.level / 100);
         }
       }
 
-      const activeBars = Math.round(levelNorm * meterSegments.length);
-      for (let i = 0; i < meterSegments.length; i++) {
-        // i = 0 is top bar, i = 9 is bottom bar
-        const barFromBottom = meterSegments.length - i;
-        meterSegments[i].style.opacity = barFromBottom <= activeBars ? '1' : '0.14';
+      const activeL = Math.round(levelL * meterRows.length);
+      const activeR = Math.round(levelR * meterRows.length);
+      for (let i = 0; i < meterRows.length; i++) {
+        const barFromBottom = meterRows.length - i;
+        meterRows[i][0].style.opacity = barFromBottom <= activeL ? '1' : '0.16';
+        meterRows[i][1].style.opacity = barFromBottom <= activeR ? '1' : '0.16';
       }
 
       requestAnimationFrame(tick);
     }
 
-    // Initialize hardware state
     updateKnobsVisual();
     updateCueLeds();
     applyTrackArtwork();
