@@ -308,4 +308,1369 @@
 
     .hw-key-navy {
       border-radius: 3px;
-      background: linear-gradient(180deg, #263956 0%, #142033
+      background: linear-gradient(180deg, #263956 0%, #142033 100%);
+      box-shadow:
+        0 3px 0 #0a101a,
+        0 5px 9px rgba(0, 0, 0, 0.45),
+        inset 0 1px 1px rgba(255, 255, 255, 0.22);
+      border: 1px solid #0d1522;
+      color: #eef3fa;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      transition: transform 60ms ease, box-shadow 60ms ease;
+      cursor: pointer;
+    }
+
+    .hw-key-navy:active,
+    .hw-key-navy.is-active {
+      transform: translateY(2px);
+      box-shadow:
+        0 1px 0 #0a101a,
+        0 2px 4px rgba(0, 0, 0, 0.45),
+        inset 0 1px 3px rgba(0, 0, 0, 0.55);
+    }
+
+    /* Red LED digital display */
+    .led-display-box {
+      background: linear-gradient(180deg, #120909 0%, #1c0c0c 50%, #110808 100%);
+      border-radius: 3px;
+      box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.92),
+        0 1px 0 rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(255, 50, 40, 0.16);
+    }
+
+    .led-digits {
+      font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+      color: var(--led-red);
+      text-shadow: var(--led-red-glow);
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+
+    .led-ghost {
+      position: absolute;
+      inset: 0;
+      font-family: 'Share Tech Mono', 'JetBrains Mono', monospace;
+      color: var(--led-red-dim);
+      letter-spacing: 0.06em;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* Rotary knobs */
+    .knob-collar {
+      border-radius: 9999px;
+      background: linear-gradient(155deg, #9fa3a9 0%, #d2d4d8 65%, #e3e5e8 100%);
+      box-shadow:
+        inset 0 2px 5px rgba(0, 0, 0, 0.42),
+        0 1px 0 rgba(255, 255, 255, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .knob-cap-dark {
+      width: 74%;
+      height: 74%;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 35% 30%, #4b4f56 0%, #26292e 65%, #15171a 100%);
+      box-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.52),
+        inset 0 1px 1px rgba(255, 255, 255, 0.28);
+      position: relative;
+      cursor: ns-resize;
+      touch-action: none;
+    }
+
+    .knob-cap-light {
+      width: 74%;
+      height: 74%;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 35% 30%, #f1f2f4 0%, #c9ccd1 68%, #9ea2a8 100%);
+      box-shadow:
+        0 3px 6px rgba(0, 0, 0, 0.42),
+        inset 0 1px 1px rgba(255, 255, 255, 0.9);
+      position: relative;
+      cursor: ns-resize;
+      touch-action: none;
+    }
+
+    .knob-indicator {
+      position: absolute;
+      top: 10%;
+      left: 50%;
+      width: 2px;
+      height: 24%;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    /* Orange switches */
+    .orange-switch-well {
+      background: linear-gradient(180deg, #8f9399 0%, #c9ccd0 100%);
+      box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.48),
+        0 1px 0 rgba(255, 255, 255, 0.7);
+      border-radius: 2px;
+    }
+
+    .orange-paddle {
+      background: linear-gradient(180deg, #ff7b29 0%, #e8530e 100%);
+      box-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.42),
+        inset 0 1px 1px rgba(255, 220, 190, 0.65);
+      border-radius: 2px;
+      cursor: pointer;
+      transition: transform 90ms ease;
+    }
+
+    /* Custom scrollbar for TOC modal */
+    .toc-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .toc-scroll::-webkit-scrollbar-track {
+      background: #16181c;
+    }
+    .toc-scroll::-webkit-scrollbar-thumb {
+      background: #3b4048;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body class="flex flex-col items-center justify-start min-h-dvh py-2 px-2 gap-2">
+
+  <!-- Compact PWA & Local Audio Toolbar -->
+  <header class="w-full max-w-[540px] flex items-center justify-between gap-2 px-2 py-1 rounded-md bg-[#1c1f24]/90 border border-white/10 text-zinc-200 shadow-lg z-40">
+    <div class="flex items-center gap-1.5">
+      <button
+        id="btn-load-files"
+        type="button"
+        class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-900 border border-white/10 text-[11px] font-semibold tracking-wide text-zinc-100 transition cursor-pointer flex items-center gap-1"
+        title="Carica file audio e immagini locali"
+      >
+        <span>♫</span>
+        <span>CARICA FILE</span>
+      </button>
+      <button
+        id="btn-load-folder"
+        type="button"
+        class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 active:bg-zinc-900 border border-white/10 text-[11px] font-semibold tracking-wide text-zinc-100 transition cursor-pointer flex items-center gap-1"
+        title="Carica un'intera cartella locale"
+      >
+        <span>📁</span>
+        <span>CARTELLA</span>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-1.5">
+      <span id="pwa-status-badge" class="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-400/25">
+        OFFLINE READY
+      </span>
+      <button
+        id="btn-install-pwa"
+        type="button"
+        class="hidden px-2 py-1 rounded bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold tracking-wider uppercase transition cursor-pointer"
+      >
+        INSTALLA
+      </button>
+    </div>
+  </header>
+
+  <!-- Hidden File Inputs -->
+  <input id="file-input-multi" type="file" accept="audio/*,image/*,.flac,.ogg,.m4a,.aac,.wav,.mp3" multiple class="hidden" />
+  <input id="file-input-folder" type="file" webkitdirectory directory multiple class="hidden" />
+
+  <!-- Main Hardware Chassis -->
+  <main id="cd-chassis" class="cd-chassis" aria-label="TE-CD01 Digital Audio CD Player">
+    <!-- Top Orange Power Switch -->
+    <div
+      id="power-switch"
+      title="POWER"
+      class="orange-switch-well absolute z-20 flex items-center justify-center"
+      style="left: 84.4%; top: 0%; width: 5.2%; height: 1.55%;"
+    >
+      <div id="power-paddle" class="orange-paddle w-[78%] h-[76%]"></div>
+    </div>
+
+    <!-- Top Silkscreen Labels -->
+    <div class="silk-label absolute z-10" style="left: 9.8%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">OUTPUT</div>
+    <div class="silk-label absolute z-10 flex items-center gap-1" style="left: 22.7%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">
+      <span class="inline-block w-[5px] h-[5px] rounded-full bg-[#1c1e22]"></span>
+      <span>BT</span>
+    </div>
+    <div class="silk-label absolute z-10" style="left: 30.8%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">SYNC OUT</div>
+    <div class="silk-label absolute z-10" style="left: 59.3%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">DATA</div>
+    <div class="silk-label absolute z-10" style="left: 71.2%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">USB</div>
+    <div class="silk-label absolute z-10" style="left: 83.2%; top: 2.3%; font-size: clamp(8px, 1.55vw, 11px);">POWER</div>
+
+    <!-- Top-Left 2x2 Jack Cluster -->
+    <div class="connector-hole absolute z-10" style="left: 10.6%; top: 6.2%;"></div>
+    <div class="connector-hole absolute z-10" style="left: 16.5%; top: 6.2%;"></div>
+    <div class="connector-hole absolute z-10" style="left: 10.6%; top: 10.6%;"></div>
+    <div class="connector-hole absolute z-10" style="left: 16.5%; top: 10.6%;"></div>
+
+    <!-- Top-Right 2x2 Jack Cluster -->
+    <div class="connector-hole absolute z-10" style="left: 83.2%; top: 6.2%;"></div>
+    <div class="connector-hole absolute z-10" style="left: 89.1%; top: 6.2%;"></div>
+    <div class="connector-hole absolute z-10" style="left: 83.2%; top: 10.6%;"></div>
+    <div class="connector-hole absolute z-10" style="left: 89.1%; top: 10.6%;"></div>
+
+    <!-- Side / Perimeter Screws -->
+    <div class="screw-head" style="left: 1.5%; top: 17.8%;"></div>
+    <div class="screw-head" style="left: 1.5%; top: 29.8%;"></div>
+    <div class="screw-head" style="left: 96.7%; top: 29.8%;"></div>
+
+    <!-- Recessed Circular Cutouts -->
+    <div class="recess-pocket" style="left: 76.2%; top: 12.2%; width: 14.5%; aspect-ratio: 1 / 1;"></div>
+    <div class="recess-pocket" style="left: 25.5%; top: 53.6%; width: 10.2%; aspect-ratio: 1 / 1;"></div>
+
+    <!-- Left Laser Pickup Bay -->
+    <div
+      class="absolute z-10 rounded-[3px] overflow-hidden"
+      style="left: 12.8%; top: 24.4%; width: 17.8%; height: 11.4%; background: linear-gradient(160deg, #272a2f 0%, #121417 100%); box-shadow: inset 0 2px 6px rgba(0,0,0,0.85), 0 1px 0 rgba(255,255,255,0.65);"
+    >
+      <div class="w-full h-[54%] bg-[#0b0c0e] border-b border-white/10"></div>
+      <div class="px-1.5 py-1 text-[6.5px] leading-[1.15] font-mono tracking-wider text-zinc-300/80 uppercase">
+        <div>CLASS 1 LASER</div>
+        <div>NEVER LOOK</div>
+      </div>
+    </div>
+
+    <!-- CD Drop Shadow -->
+    <div class="cd-well-shadow"></div>
+
+    <!-- Rotating Disc Assembly (Dynamic Cover Art or Default Blue CD) -->
+    <div id="cd-disc" class="cd-disc-wrapper" title="Trascina per fare scrub nella traccia">
+      <!-- Default Blue Utility CD Layer -->
+      <div id="cd-blue-layer" class="cd-blue-surface">
+        <!-- Concentric data track micro-rings -->
+        <div
+          class="absolute inset-[16%] rounded-full pointer-events-none opacity-35"
+          style="background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.16) 0px, rgba(255,255,255,0.16) 1px, transparent 1px, transparent 3px);"
+        ></div>
+
+        <!-- Technical silkscreen text on upper blue CD -->
+        <div
+          class="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none font-mono uppercase"
+          style="top: 17.5%; width: 58%; color: rgba(235, 244, 255, 0.88); font-size: clamp(6px, 1.15vw, 8.4px); line-height: 1.28; letter-spacing: 0.04em;"
+        >
+          <div class="font-bold">UTILITY COMPACT DISC</div>
+          <div>CALIBRATION TOOLS AND STAFF</div>
+          <div>AUDIO EXCERPTS RECORDED BY</div>
+          <div class="mt-0.5 font-semibold">◉ © TEENAGE ENGINEERING</div>
+          <div>2026 ALL RIGHTS RESERVED</div>
+          <div>LC-100439. TE036RE00L</div>
+        </div>
+
+        <div class="cd-sheen-overlay"></div>
+      </div>
+
+      <!-- Dynamic Artwork Layer (Embedded APIC / FLAC Picture / Local Image) -->
+      <div id="cd-cover-layer" class="cd-cover-surface hidden">
+        <img id="cd-cover-img" src="" alt="Track Artwork" class="w-full h-full object-cover" />
+        <div class="cd-sheen-overlay"></div>
+      </div>
+
+      <!-- Center Hub with DIGITAL VARISPEED & 16-BIT 44.1KHZ -->
+      <div class="cd-center-hub">
+        <svg viewBox="0 0 120 120" class="absolute inset-0 w-full h-full pointer-events-none">
+          <defs>
+            <path id="hub-arc-top" d="M 18,60 A 42,42 0 1,1 102,60" />
+            <path id="hub-arc-bottom" d="M 98,68 A 40,40 0 0,1 22,68" />
+          </defs>
+          <text fill="#e4e7ec" font-size="7.6" font-weight="700" letter-spacing="1.4" font-family="Inter, sans-serif">
+            <textPath href="#hub-arc-top" startOffset="50%" text-anchor="middle">DIGITAL VARISPEED</textPath>
+          </text>
+          <text fill="#cfd4dc" font-size="7.2" font-weight="600" letter-spacing="1.2" font-family="JetBrains Mono, monospace">
+            <textPath href="#hub-arc-bottom" startOffset="50%" text-anchor="middle">16-BIT 44.1KHZ</textPath>
+          </text>
+        </svg>
+        <div class="cd-spindle-hole"></div>
+      </div>
+    </div>
+
+    <!-- Left Numeric Keypad (7-8-9 / 4-5-6 / 1-2-3 / T-0-C) -->
+    <div
+      id="keypad-grid"
+      class="absolute z-20 grid grid-cols-3"
+      style="left: 5.5%; top: 40.5%; width: 25.2%; height: 26.8%; column-gap: 4.8%; row-gap: 3.4%;"
+    >
+      <button type="button" data-key="7" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">7</button>
+      <button type="button" data-key="8" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">8</button>
+      <button type="button" data-key="9" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">9</button>
+
+      <button type="button" data-key="4" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">4</button>
+      <button type="button" data-key="5" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">5</button>
+      <button type="button" data-key="6" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">6</button>
+
+      <button type="button" data-key="1" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">1</button>
+      <button type="button" data-key="2" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">2</button>
+      <button type="button" data-key="3" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">3</button>
+
+      <button type="button" data-key="T" class="hw-key-grey flex items-center justify-center text-[clamp(11px,2.1vw,15px)]" title="Apri TOC / Lista Tracce">T</button>
+      <button type="button" data-key="0" class="hw-key-grey flex items-center justify-center text-[clamp(12px,2.3vw,16px)]">0</button>
+      <button type="button" data-key="C" class="hw-key-grey flex items-center justify-center text-[clamp(11px,2.1vw,15px)]" title="Clear / Reset / Stop">C</button>
+    </div>
+
+    <!-- Left Black ENTER Button -->
+    <button
+      id="btn-enter"
+      type="button"
+      class="hw-key-black absolute z-20 flex items-center justify-center text-[clamp(9px,1.65vw,12px)]"
+      style="left: 5.5%; top: 73.2%; width: 12.6%; height: 5.6%;"
+    >
+      ENTER
+    </button>
+
+    <!-- Vertical Stereo L / R LED Level Meter -->
+    <div
+      class="absolute z-20 flex flex-col items-center justify-between"
+      style="left: 88.5%; top: 48.5%; width: 5.8%; height: 15.5%;"
+    >
+      <div class="flex items-center justify-center gap-1.5 w-full silk-label" style="font-size: clamp(7.5px, 1.35vw, 9.5px);">
+        <span>L</span>
+        <span>R</span>
+      </div>
+      <div
+        id="lr-meter-bars"
+        class="w-[68%] flex-1 mt-1 rounded-[2px] bg-[#141111] p-[2px] flex flex-col justify-between shadow-inner border border-black/40"
+      >
+        <!-- 10 LED segments generated via JS (top = peak/clip, bottom = low) -->
+      </div>
+    </div>
+
+    <!-- Red LED Digital Display Cluster -->
+    <div
+      class="absolute z-20 flex items-start gap-[2.2%]"
+      style="left: 31.8%; top: 59.5%; width: 54.8%; height: 6.2%;"
+    >
+      <!-- TRACK / INDEX / MIN / SEC Group -->
+      <div class="flex-1 h-full flex flex-col justify-between">
+        <div class="grid grid-cols-4 text-center silk-label" style="font-size: clamp(6.5px, 1.15vw, 8.5px); letter-spacing: 0.04em;">
+          <span>TRACK</span>
+          <span>INDEX</span>
+          <span>MIN</span>
+          <span>SEC</span>
+        </div>
+        <div class="led-display-box w-full h-[74%] px-1.5 flex items-center justify-between relative overflow-hidden">
+          <div class="relative flex items-center justify-between w-full text-[clamp(13px,2.55vw,18px)]">
+            <span class="led-ghost">888 888 888 888</span>
+            <span id="disp-track" class="led-digits relative">009</span>
+            <span id="disp-index" class="led-digits relative">023</span>
+            <span id="disp-min" class="led-digits relative">008</span>
+            <span id="disp-sec" class="led-digits relative">056</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- VARISPEED Display -->
+      <div class="w-[18.5%] h-full flex flex-col justify-between">
+        <div class="text-center silk-label truncate" style="font-size: clamp(6px, 1.05vw, 7.8px); letter-spacing: 0.02em;">VARISPEED</div>
+        <div class="led-display-box w-full h-[74%] px-1 flex items-center justify-center relative overflow-hidden">
+          <div class="relative flex items-center justify-center w-full text-[clamp(13px,2.55vw,18px)]">
+            <span class="led-ghost text-center w-full">888</span>
+            <span id="disp-varispeed" class="led-digits relative">100</span>
+          </div>
+        </div>
+      </div>
+      <!-- LINE LEVEL Display -->
+      <div class="w-[18.5%] h-full flex flex-col justify-between">
+        <div class="text-center silk-label truncate" style="font-size: clamp(6px, 1.05vw, 7.8px); letter-spacing: 0.02em;">LINE LEVEL</div>
+        <div class="led-display-box w-full h-[74%] px-1 flex items-center justify-center relative overflow-hidden">
+          <div class="relative flex items-center justify-center w-full text-[clamp(13px,2.55vw,18px)]">
+            <span class="led-ghost text-center w-full">888</span>
+            <span id="disp-level" class="led-digits relative">058</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+PARTE 2 (da incollare subito dopo la Parte 1)
+HTML
+
+    <!-- CUE 1 / CUE 2 / CUE 3 Buttons with LEDs -->
+    <div
+      class="absolute z-20 flex items-end justify-between"
+      style="left: 31.8%; top: 70.5%; width: 35.8%; height: 9.2%;"
+    >
+      <!-- CUE 1 -->
+      <div class="w-[29%] h-full flex flex-col items-center justify-between">
+        <div class="flex items-center gap-1 silk-label" style="font-size: clamp(7px, 1.2vw, 9px);">
+          <span id="cue-led-1" class="w-[6px] h-[6px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
+          <span>CUE</span>
+        </div>
+        <button
+          id="btn-cue-1"
+          type="button"
+          class="hw-key-grey w-full h-[72%] flex items-center justify-center text-[clamp(12px,2.2vw,15px)]"
+          title="Tap breve: salva/vai a CUE 1 | Pressione lunga o C: cancella"
+        >
+          1
+        </button>
+      </div>
+
+      <!-- CUE 2 -->
+      <div class="w-[29%] h-full flex flex-col items-center justify-between">
+        <div class="flex items-center gap-1 silk-label" style="font-size: clamp(7px, 1.2vw, 9px);">
+          <span id="cue-led-2" class="w-[6px] h-[6px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
+          <span>CUE</span>
+        </div>
+        <button
+          id="btn-cue-2"
+          type="button"
+          class="hw-key-grey w-full h-[72%] flex items-center justify-center text-[clamp(12px,2.2vw,15px)]"
+          title="Tap breve: salva/vai a CUE 2 | Pressione lunga o C: cancella"
+        >
+          2
+        </button>
+      </div>
+
+      <!-- CUE 3 -->
+      <div class="w-[29%] h-full flex flex-col items-center justify-between">
+        <div class="flex items-center gap-1 silk-label" style="font-size: clamp(7px, 1.2vw, 9px);">
+          <span id="cue-led-3" class="w-[6px] h-[6px] rounded-full bg-[#4a3533] border border-black/30 transition-all"></span>
+          <span>CUE</span>
+        </div>
+        <button
+          id="btn-cue-3"
+          type="button"
+          class="hw-key-grey w-full h-[72%] flex items-center justify-center text-[clamp(12px,2.2vw,15px)]"
+          title="Tap breve: salva/vai a CUE 3 | Pressione lunga o C: cancella"
+        >
+          3
+        </button>
+      </div>
+    </div>
+
+    <!-- Rotary Knobs: VARISPEED & LEVEL -->
+    <div
+      class="absolute z-20 flex items-end justify-between"
+      style="left: 70.6%; top: 70.5%; width: 23.6%; height: 9.2%;"
+    >
+      <!-- VARISPEED Knob -->
+      <div class="w-[45%] h-full flex flex-col items-center justify-between">
+        <div class="silk-label truncate w-full text-center" style="font-size: clamp(6px, 1.05vw, 7.8px);">VARISPEED</div>
+        <div class="knob-collar w-[74%] aspect-square">
+          <div id="knob-varispeed" class="knob-cap-dark" title="Trascina su/giù per VARISPEED (50% - 150%)">
+            <div class="knob-indicator bg-zinc-200"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEVEL Knob -->
+      <div class="w-[45%] h-full flex flex-col items-center justify-between">
+        <div class="silk-label truncate w-full text-center" style="font-size: clamp(6px, 1.05vw, 7.8px);">LEVEL</div>
+        <div class="knob-collar w-[74%] aspect-square">
+          <div id="knob-level" class="knob-cap-light" title="Trascina su/giù per LINE LEVEL (0% - 100%)">
+            <div class="knob-indicator bg-zinc-700"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Transport Row: JOG | |< | >| | STOP | PLAY -->
+    <div
+      class="absolute z-20 flex items-start justify-between"
+      style="left: 31.8%; top: 84.5%; width: 62.4%; height: 6.4%;"
+    >
+      <!-- Orange JOG Switch -->
+      <div class="w-[12.2%] h-full flex flex-col items-center justify-between">
+        <div class="orange-switch-well w-full h-[76%] flex items-center justify-center">
+          <div id="jog-paddle" class="orange-paddle w-[76%] h-[78%]" title="JOG: clicca per salto rapido +5s (o Shift+clic -5s)"></div>
+        </div>
+        <span class="silk-label" style="font-size: clamp(7px, 1.25vw, 9px);">JOG</span>
+      </div>
+
+      <!-- Previous Track |< -->
+      <button
+        id="btn-prev"
+        type="button"
+        class="hw-key-grey w-[16.8%] h-[76%] flex items-center justify-center"
+        title="Traccia precedente"
+      >
+        <svg viewBox="0 0 24 24" class="w-[46%] h-[46%] fill-current">
+          <path d="M6 6h2.4v12H6zm3.6 6 8.4 6V6z" />
+        </svg>
+      </button>
+
+      <!-- Next Track >| -->
+      <button
+        id="btn-next"
+        type="button"
+        class="hw-key-grey w-[16.8%] h-[76%] flex items-center justify-center"
+        title="Traccia successiva"
+      >
+        <svg viewBox="0 0 24 24" class="w-[46%] h-[46%] fill-current">
+          <path d="M6 18l8.4-6L6 6v12zM15.6 6v12H18V6h-2.4z" />
+        </svg>
+      </button>
+
+      <!-- STOP -->
+      <button
+        id="btn-stop"
+        type="button"
+        class="hw-key-grey w-[16.8%] h-[76%] flex items-center justify-center text-[clamp(8.5px,1.5vw,11px)] tracking-wider"
+      >
+        STOP
+      </button>
+
+      <!-- PLAY -->
+      <button
+        id="btn-play"
+        type="button"
+        class="hw-key-navy w-[22.5%] h-[76%] flex items-center justify-center text-[clamp(8.5px,1.5vw,11px)] tracking-wider"
+      >
+        PLAY
+      </button>
+    </div>
+
+    <!-- Bottom Right PHONES Label & Jack -->
+    <div class="absolute z-20 flex items-center gap-2" style="left: 77.5%; top: 94.8%;">
+      <span class="silk-label" style="font-size: clamp(8px, 1.45vw, 10.5px);">PHONES</span>
+    </div>
+
+    <!-- Drag & Drop Overlay -->
+    <div
+      id="drop-overlay"
+      class="hidden absolute inset-0 z-30 bg-zinc-950/80 backdrop-blur-[2px] flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-orange-400 rounded-[6px] pointer-events-none"
+    >
+      <div class="text-orange-400 text-2xl mb-1">♫</div>
+      <div class="text-white font-semibold text-sm tracking-wide">RILASCIA FILE AUDIO O COPERTINE</div>
+      <div class="text-zinc-300 text-xs mt-1">MP3, WAV, FLAC, OGG, M4A, AAC • JPG, PNG, WEBP</div>
+    </div>
+  </main>
+
+  <!-- TOC / Tracklist Modal (Triggered by keypad 'T') -->
+  <div
+    id="toc-modal"
+    class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-xs flex items-center justify-center p-4"
+  >
+    <div class="w-full max-w-md bg-[#17191e] text-zinc-100 rounded-lg border border-white/15 shadow-2xl overflow-hidden flex flex-col max-h-[78dvh]">
+      <div class="px-4 py-3 bg-[#1e2128] border-b border-white/10 flex items-center justify-between">
+        <div>
+          <div class="text-xs font-mono uppercase tracking-widest text-orange-400">TABLE OF CONTENTS</div>
+          <div id="toc-count" class="text-xs text-zinc-400 mt-0.5">001 Traccia caricata</div>
+        </div>
+        <button
+          id="btn-close-toc"
+          type="button"
+          class="px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-xs font-mono text-zinc-200 cursor-pointer"
+        >
+          CHIUDI [T]
+        </button>
+      </div>
+      <div id="toc-list" class="toc-scroll overflow-y-auto divide-y divide-white/5 flex-1"></div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // 1. PWA MANIFEST & SERVICE WORKER REGISTRATION (PREVIEW-SAFE)
+    // =========================================================================
+    (function setupPWA() {
+      const iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <rect width="512" height="512" rx="64" fill="#c9cbce"/>
+        <circle cx="315" cy="185" r="145" fill="#1d4475"/>
+        <circle cx="315" cy="185" r="42" fill="#2d3035" stroke="#8a8f96" stroke-width="6"/>
+        <circle cx="315" cy="185" r="15" fill="#0d0f12"/>
+        <rect x="46" y="340" width="420" height="72" rx="8" fill="#160b0b"/>
+        <text x="72" y="388" fill="#ff2a1f" font-family="monospace" font-size="38" font-weight="bold">009 023 100</text>
+      </svg>`;
+      const iconDataUrl = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(iconSvg);
+
+      const manifestObj = {
+        name: 'TE-CD01 Industrial CD Player',
+        short_name: 'TE-CD01',
+        description: 'Progressive Web App per la riproduzione di file audio locali con interfaccia CD hardware.',
+        start_url: './',
+        scope: './',
+        display: 'standalone',
+        orientation: 'portrait',
+        theme_color: '#c9cbce',
+        background_color: '#171a1f',
+        icons: [
+          { src: iconDataUrl, sizes: '192x192', type: 'image/svg+xml', purpose: 'any' },
+          { src: iconDataUrl, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }
+        ]
+      };
+
+      const manifestBlob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
+      const manifestUrl = URL.createObjectURL(manifestBlob);
+      const linkEl = document.createElement('link');
+      linkEl.rel = 'manifest';
+      linkEl.href = manifestUrl;
+      document.head.appendChild(linkEl);
+
+      // Install prompt handling
+      let deferredPrompt = null;
+      const installBtn = document.getElementById('btn-install-pwa');
+      const statusBadge = document.getElementById('pwa-status-badge');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.classList.remove('hidden');
+      });
+
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installBtn.classList.add('hidden');
+      });
+
+      window.addEventListener('appinstalled', () => {
+        installBtn.classList.add('hidden');
+        statusBadge.textContent = 'INSTALLED';
+      });
+
+      // Service Worker registration with graceful preview fallback
+      if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+        const swCode = `
+          const CACHE_NAME = 'te-cd01-v1';
+          self.addEventListener('install', (event) => {
+            self.skipWaiting();
+            event.waitUntil(
+              caches.open(CACHE_NAME).then((cache) => cache.addAll(['./']).catch(() => {}))
+            );
+          });
+          self.addEventListener('activate', (event) => {
+            event.waitUntil(
+              caches.keys().then((keys) =>
+                Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+              ).then(() => self.clients.claim())
+            );
+          });
+          self.addEventListener('fetch', (event) => {
+            if (event.request.method !== 'GET') return;
+            event.respondWith(
+              caches.match(event.request).then((cached) => {
+                if (cached) return cached;
+                return fetch(event.request).then((res) => {
+                  if (res && res.status === 200 && res.type === 'basic') {
+                    const copy = res.clone();
+                    caches.open(CACHE_NAME).then((c) => c.put(event.request, copy)).catch(() => {});
+                  }
+                  return res;
+                }).catch(() => cached || new Response('Offline', { status: 503 }));
+              })
+            );
+          });
+        `;
+        const swBlob = new Blob([swCode], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+        navigator.serviceWorker.register(swUrl).catch(() => {
+          statusBadge.textContent = 'PREVIEW MODE';
+        });
+      }
+    })();
+
+    // =========================================================================
+    // 2. SYNTHETIC CALIBRATION WAV GENERATOR (BUILT-IN DEFAULT TRACK)
+    // =========================================================================
+    function createCalibrationWavUrl() {
+      const sampleRate = 22050;
+      const durationSec = 18;
+      const numSamples = sampleRate * durationSec;
+      const buffer = new ArrayBuffer(44 + numSamples * 2);
+      const view = new DataView(buffer);
+
+      const writeStr = (offset, str) => {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+      };
+
+      writeStr(0, 'RIFF');
+      view.setUint32(4, 36 + numSamples * 2, true);
+      writeStr(8, 'WAVE');
+      writeStr(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true); // PCM
+      view.setUint16(22, 1, true); // Mono
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeStr(36, 'data');
+      view.setUint32(40, numSamples * 2, true);
+
+      const chord = [220, 277.18, 329.63, 440];
+      for (let i = 0; i < numSamples; i++) {
+        const t = i / sampleRate;
+        const step = Math.floor(t * 2) % chord.length;
+        const freq = chord[step];
+        const env = Math.min(1, (t % 0.5) / 0.03) * Math.max(0.15, 1 - ((t % 0.5) * 1.4));
+        const pulse = (Math.floor(t * 4) % 2 === 0) ? 0.24 : 0.11;
+        const sample = Math.sin(2 * Math.PI * freq * t) * pulse * env;
+        const clamped = Math.max(-1, Math.min(1, sample));
+        view.setInt16(44 + i * 2, clamped * 0x7fff, true);
+      }
+
+      return URL.createObjectURL(new Blob([buffer], { type: 'audio/wav' }));
+    }
+
+    // =========================================================================
+    // 3. EMBEDDED COVER ART PARSER (ID3v2 APIC & FLAC PICTURE)
+    // =========================================================================
+    async function extractEmbeddedCoverUrl(file) {
+      try {
+        const headerSlice = await file.slice(0, 262144).arrayBuffer();
+        const bytes = new Uint8Array(headerSlice);
+
+        // Check FLAC ("fLaC")
+        if (bytes[0] === 0x66 && bytes[1] === 0x4c && bytes[2] === 0x61 && bytes[3] === 0x43) {
+          let pos = 4;
+          while (pos + 4 < bytes.length) {
+            const metaHeader = bytes[pos];
+            const isLast = (metaHeader & 0x80) !== 0;
+            const blockType = metaHeader & 0x7f;
+            const blockLen = (bytes[pos + 1] << 16) | (bytes[pos + 2] << 8) | bytes[pos + 3];
+            const dataStart = pos + 4;
+            if (blockType === 6 && dataStart + 32 < bytes.length) {
+              const view = new DataView(bytes.buffer, bytes.byteOffset + dataStart, Math.min(blockLen, bytes.length - dataStart));
+              const mimeLen = view.getUint32(4, false);
+              let cursor = 8;
+              const mimeType = new TextDecoder().decode(bytes.slice(dataStart + cursor, dataStart + cursor + mimeLen)) || 'image/jpeg';
+              cursor += mimeLen;
+              const descLen = view.getUint32(cursor, false);
+              cursor += 4 + descLen + 16; // skip desc + width, height, depth, colors
+              const picLen = view.getUint32(cursor, false);
+              cursor += 4;
+              const picBytes = bytes.slice(dataStart + cursor, dataStart + cursor + picLen);
+              if (picBytes.length > 0) {
+                return URL.createObjectURL(new Blob([picBytes], { type: mimeType }));
+              }
+            }
+            pos = dataStart + blockLen;
+            if (isLast) break;
+          }
+        }
+
+        // Check ID3v2 ("ID3")
+        if (bytes[0] === 0x49 && bytes[1] === 0x44 && bytes[2] === 0x33) {
+          const version = bytes[3];
+          const tagSize =
+            ((bytes[6] & 0x7f) << 21) |
+            ((bytes[7] & 0x7f) << 14) |
+            ((bytes[8] & 0x7f) << 7) |
+            (bytes[9] & 0x7f);
+          const limit = Math.min(bytes.length, 10 + tagSize);
+          let cursor = 10;
+
+          while (cursor + 10 < limit) {
+            const frameId = String.fromCharCode(bytes[cursor], bytes[cursor + 1], bytes[cursor + 2], bytes[cursor + 3]);
+            const frameSize = version === 4
+              ? (((bytes[cursor + 4] & 0x7f) << 21) | ((bytes[cursor + 5] & 0x7f) << 14) | ((bytes[cursor + 6] & 0x7f) << 7) | (bytes[cursor + 7] & 0x7f))
+              : (((bytes[cursor + 4] << 24) | (bytes[cursor + 5] << 16) | (bytes[cursor + 6] << 8) | bytes[cursor + 7]) >>> 0);
+            const frameDataStart = cursor + 10;
+            if (frameSize <= 0 || frameDataStart + frameSize > limit) break;
+
+            if (frameId === 'APIC') {
+              const encoding = bytes[frameDataStart];
+              let p = frameDataStart + 1;
+              const mimeEnd = bytes.indexOf(0x00, p);
+              const mimeType = mimeEnd > p
+                ? (new TextDecoder().decode(bytes.slice(p, mimeEnd)) || 'image/jpeg')
+                : 'image/jpeg';
+              p = (mimeEnd >= 0 ? mimeEnd + 1 : p) + 1; // skip picture type byte
+
+              if (encoding === 0 || encoding === 3) {
+                const descEnd = bytes.indexOf(0x00, p);
+                p = descEnd >= 0 ? descEnd + 1 : p;
+              } else {
+                while (p + 1 < frameDataStart + frameSize) {
+                  if (bytes[p] === 0x00 && bytes[p + 1] === 0x00) {
+                    p += 2;
+                    break;
+                  }
+                  p += 2;
+                }
+              }
+
+              if (p < frameDataStart + frameSize) {
+                const imgBytes = bytes.slice(p, frameDataStart + frameSize);
+                return URL.createObjectURL(new Blob([imgBytes], { type: mimeType }));
+              }
+            }
+            cursor = frameDataStart + frameSize;
+          }
+        }
+      } catch (_) {
+        // Fallback to default blue CD
+      }
+      return null;
+    }
+
+    // =========================================================================
+    // 4. PLAYER STATE, WEB AUDIO ENGINE & UI BINDINGS
+    // =========================================================================
+    const state = {
+      powered: true,
+      tracks: [
+        {
+          number: 9,
+          title: 'UTILITY CALIBRATION TONE (440HZ)',
+          url: createCalibrationWavUrl(),
+          coverUrl: null,
+          cues: [null, null, null]
+        }
+      ],
+      currentIndex: 0,
+      isPlaying: false,
+      varispeed: 100, // 50..150%
+      level: 58,      // 0..100%
+      keypadBuffer: '',
+      discAngle: 0,
+      isScrubbingDisc: false,
+      lastPointerAngle: 0
+    };
+
+    const audioEl = new Audio();
+    audioEl.crossOrigin = 'anonymous';
+    audioEl.preload = 'metadata';
+
+    let audioCtx = null;
+    let gainNode = null;
+    let analyserNode = null;
+    let sourceConnected = false;
+
+    function ensureAudioGraph() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
+        gainNode = audioCtx.createGain();
+        analyserNode = audioCtx.createAnalyser();
+        analyserNode.fftSize = 256;
+        analyserNode.smoothingTimeConstant = 0.78;
+        gainNode.gain.value = state.level / 100;
+        gainNode.connect(analyserNode);
+        analyserNode.connect(audioCtx.destination);
+      }
+      if (!sourceConnected) {
+        try {
+          const src = audioCtx.createMediaElementSource(audioEl);
+          src.connect(gainNode);
+          sourceConnected = true;
+        } catch (_) {}
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
+      }
+    }
+
+    // Build 10 LED meter segments
+    const meterContainer = document.getElementById('lr-meter-bars');
+    const meterSegments = [];
+    for (let i = 0; i < 10; i++) {
+      const seg = document.createElement('div');
+      seg.className = 'w-full h-[7.2%] rounded-[1px] transition-opacity duration-75';
+      seg.style.backgroundColor = i < 2 ? '#ff2a1f' : i < 5 ? '#ff7b29' : '#ff3b2f';
+      seg.style.opacity = '0.14';
+      meterContainer.appendChild(seg);
+      meterSegments.push(seg);
+    }
+
+    // DOM references
+    const dispTrack = document.getElementById('disp-track');
+    const dispIndex = document.getElementById('disp-index');
+    const dispMin = document.getElementById('disp-min');
+    const dispSec = document.getElementById('disp-sec');
+    const dispVarispeed = document.getElementById('disp-varispeed');
+    const dispLevel = document.getElementById('disp-level');
+    const cdDisc = document.getElementById('cd-disc');
+    const cdBlueLayer = document.getElementById('cd-blue-layer');
+    const cdCoverLayer = document.getElementById('cd-cover-layer');
+    const cdCoverImg = document.getElementById('cd-cover-img');
+    const knobVarispeed = document.getElementById('knob-varispeed');
+    const knobLevel = document.getElementById('knob-level');
+    const tocModal = document.getElementById('toc-modal');
+    const tocList = document.getElementById('toc-list');
+    const tocCount = document.getElementById('toc-count');
+
+    const pad3 = (n) => String(Math.max(0, Math.min(999, Math.floor(n)))).padStart(3, '0');
+
+    function getCurrentTrack() {
+      return state.tracks[state.currentIndex] || state.tracks[0];
+    }
+
+    function applyTrackArtwork() {
+      const track = getCurrentTrack();
+      if (track && track.coverUrl) {
+        cdCoverImg.src = track.coverUrl;
+        cdCoverLayer.classList.remove('hidden');
+        cdBlueLayer.classList.add('hidden');
+      } else {
+        cdCoverLayer.classList.add('hidden');
+        cdBlueLayer.classList.remove('hidden');
+        cdCoverImg.src = '';
+      }
+    }
+
+    function updateCueLeds() {
+      const track = getCurrentTrack();
+      [1, 2, 3].forEach((slot) => {
+        const led = document.getElementById(`cue-led-${slot}`);
+        const saved = track && track.cues[slot - 1] !== null;
+        if (saved) {
+          led.style.backgroundColor = '#ff2a1f';
+          led.style.boxShadow = '0 0 6px #ff2a1f';
+        } else {
+          led.style.backgroundColor = '#4a3533';
+          led.style.boxShadow = 'none';
+        }
+      });
+    }
+
+    function updateKnobsVisual() {
+      const vsDeg = ((state.varispeed - 100) / 50) * 125;
+      knobVarispeed.style.transform = `rotate(${vsDeg}deg)`;
+
+      const lvlDeg = ((state.level / 100) * 270) - 135;
+      knobLevel.style.transform = `rotate(${lvlDeg}deg)`;
+
+      dispVarispeed.textContent = pad3(state.varispeed);
+      dispLevel.textContent = pad3(state.level);
+
+      audioEl.playbackRate = state.varispeed / 100;
+      if (gainNode && audioCtx) {
+        gainNode.gain.setTargetAtTime(state.level / 100, audioCtx.currentTime, 0.015);
+      } else {
+        audioEl.volume = state.level / 100;
+      }
+    }
+
+    function syncDisplays() {
+      if (!state.powered) {
+        dispTrack.textContent = '---';
+        dispIndex.textContent = '---';
+        dispMin.textContent = '---';
+        dispSec.textContent = '---';
+        dispVarispeed.textContent = '---';
+        dispLevel.textContent = '---';
+        return;
+      }
+
+      const track = getCurrentTrack();
+      const trackNumToShow = state.keypadBuffer.length > 0 ? Number(state.keypadBuffer) : track.number;
+      dispTrack.textContent = pad3(trackNumToShow);
+
+      const currentTime = audioEl.currentTime || 0;
+      const centis = Math.floor((currentTime % 1) * 100);
+      const totalSecs = Math.floor(currentTime);
+      const mins = Math.floor(totalSecs / 60);
+      const secs = totalSecs % 60;
+
+      dispIndex.textContent = pad3(centis);
+      dispMin.textContent = pad3(mins);
+      dispSec.textContent = pad3(secs);
+      dispVarispeed.textContent = pad3(state.varispeed);
+      dispLevel.textContent = pad3(state.level);
+    }
+
+    function loadTrackAt(index, autoPlay = false) {
+      if (!state.powered || state.tracks.length === 0) return;
+      const wrapped = ((index % state.tracks.length) + state.tracks.length) % state.tracks.length;
+      state.currentIndex = wrapped;
+      state.keypadBuffer = '';
+      const track = getCurrentTrack();
+      audioEl.src = track.url;
+      audioEl.currentTime = 0;
+      audioEl.playbackRate = state.varispeed / 100;
+      applyTrackArtwork();
+      updateCueLeds();
+      syncDisplays();
+      renderToc();
+      if (autoPlay) {
+        playAudio();
+      }
+    }
+
+    async function playAudio() {
+      if (!state.powered) return;
+      ensureAudioGraph();
+      if (!audioEl.src) {
+        audioEl.src = getCurrentTrack().url;
+      }
+      audioEl.playbackRate = state.varispeed / 100;
+      try {
+        await audioEl.play();
+        state.isPlaying = true;
+      } catch (_) {
+        state.isPlaying = false;
+      }
+    }
+
+    function stopAudio() {
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      state.isPlaying = false;
+      syncDisplays();
+    }
+
+    // =========================================================================
+    // 5. TRANSPORT, KEYPAD, CUE POINTS & KNOB CONTROLS
+    // =========================================================================
+    document.getElementById('btn-play').addEventListener('click', () => playAudio());
+    document.getElementById('btn-stop').addEventListener('click', () => stopAudio());
+    document.getElementById('btn-prev').addEventListener('click', () => loadTrackAt(state.currentIndex - 1, state.isPlaying));
+    document.getElementById('btn-next').addEventListener('click', () => loadTrackAt(state.currentIndex + 1, state.isPlaying));
+
+    // JOG switch: quick jump +5s (or -5s with Shift)
+    const jogPaddle = document.getElementById('jog-paddle');
+    jogPaddle.addEventListener('click', (e) => {
+      if (!state.powered) return;
+      jogPaddle.style.transform = e.shiftKey ? 'translateY(2px)' : 'translateY(-2px)';
+      setTimeout(() => { jogPaddle.style.transform = ''; }, 130);
+      const delta = e.shiftKey ? -5 : 5;
+      const maxDur = Number.isFinite(audioEl.duration) ? audioEl.duration : 9999;
+      audioEl.currentTime = Math.max(0, Math.min(maxDur, (audioEl.currentTime || 0) + delta));
+      syncDisplays();
+    });
+
+    // POWER toggle
+    const powerPaddle = document.getElementById('power-paddle');
+    document.getElementById('power-switch').addEventListener('click', () => {
+      state.powered = !state.powered;
+      powerPaddle.style.transform = state.powered ? 'translateY(0)' : 'translateY(3px)';
+      if (!state.powered) {
+        stopAudio();
+      }
+      syncDisplays();
+    });
+
+    // Keypad buttons
+    document.querySelectorAll('#keypad-grid [data-key]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (!state.powered) return;
+        const k = btn.dataset.key;
+        if (/^[0-9]$/.test(k)) {
+          if (state.keypadBuffer.length >= 3) state.keypadBuffer = '';
+          state.keypadBuffer += k;
+          syncDisplays();
+        } else if (k === 'T') {
+          openToc();
+        } else if (k === 'C') {
+          state.keypadBuffer = '';
+          const track = getCurrentTrack();
+          track.cues = [null, null, null];
+          updateCueLeds();
+          stopAudio();
+          syncDisplays();
+        }
+      });
+    });
+
+    // ENTER button: select matching track number or index
+    document.getElementById('btn-enter').addEventListener('click', () => {
+      if (!state.powered || !state.keypadBuffer) return;
+      const targetNum = parseInt(state.keypadBuffer, 10);
+      state.keypadBuffer = '';
+      const foundIdx = state.tracks.findIndex((t) => t.number === targetNum);
+      if (foundIdx >= 0) {
+        loadTrackAt(foundIdx, true);
+      } else if (targetNum >= 1 && targetNum <= state.tracks.length) {
+        loadTrackAt(targetNum - 1, true);
+      } else {
+        syncDisplays();
+      }
+    });
+
+    // CUE 1 / CUE 2 / CUE 3: short tap saves/jumps, long press (550ms) clears
+    [1, 2, 3].forEach((slot) => {
+      const btn = document.getElementById(`btn-cue-${slot}`);
+      let pressTimer = null;
+      let longPressed = false;
+
+      btn.addEventListener('pointerdown', (e) => {
+        if (!state.powered) return;
+        e.preventDefault();
+        longPressed = false;
+        pressTimer = setTimeout(() => {
+          longPressed = true;
+          const track = getCurrentTrack();
+          track.cues[slot - 1] = null;
+          updateCueLeds();
+        }, 550);
+      });
+
+      const finishPress = () => {
+        if (pressTimer) {
+          clearTimeout(pressTimer);
+          pressTimer = null;
+        }
+        if (longPressed || !state.powered) return;
+        const track = getCurrentTrack();
+        const savedTime = track.cues[slot - 1];
+        if (savedTime === null || savedTime === undefined) {
+          track.cues[slot - 1] = audioEl.currentTime || 0;
+          updateCueLeds();
+        } else {
+          audioEl.currentTime = savedTime;
+          syncDisplays();
+          if (!state.isPlaying) playAudio();
+        }
+      };
+
+      btn.addEventListener('pointerup', finishPress);
+      btn.addEventListener('pointerleave', () => {
+        if (pressTimer) {
+          clearTimeout(pressTimer);
+          pressTimer = null;
+        }
+      });
+    });
+
+    // Rotary knob drag handler
+    function attachKnobDrag(el, onDelta) {
+      let startY = 0;
+      let dragging = false;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (!state.powered) return;
+        e.preventDefault();
+        el.setPointerCapture(e.pointerId);
+        startY = e.clientY;
+        dragging = true;
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dy = startY - e.clientY;
+        if (Math.abs(dy) >= 2) {
+          onDelta(dy * 0.65);
+          startY = e.clientY;
+        }
+      });
+
+      const stopDrag = () => { dragging = false; };
+      el.addEventListener('pointerup', stopDrag);
+      el.addEventListener('pointercancel', stopDrag);
+    }
+
+    attachKnobDrag(knobVarispeed, (delta) => {
+      state.varispeed = Math.max(50, Math.min(150, Math.round(state.varispeed + delta)));
+      updateKnobsVisual();
+    });
+
+    attachKnobDrag(knobLevel, (delta) => {
+      state.level = Math.max(0, Math.min(100, Math.round(state.level + delta)));
+      updateKnobsVisual();
+    });
+
+    // CD Disc pointer scrubbing
+    function getPointerAngle(e) {
+      const rect = cdDisc.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      return Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+    }
+
+    cdDisc.addEventListener('pointerdown', (e) => {
+      if (!state.powered) return;
+      e.preventDefault();
+      cdDisc.setPointerCapture(e.pointerId);
+      state.isScrubbingDisc = true;
+      state.lastPointerAngle = getPointerAngle(e);
+    });
+
+    cdDisc.addEventListener('pointermove', (e) => {
+      if (!state.isScrubbingDisc) return;
+      const angle = getPointerAngle(e);
+      let deltaAngle = angle - state.lastPointerAngle;
+      if (deltaAngle > 180) deltaAngle -= 360;
+      if (deltaAngle < -180) deltaAngle += 360;
+      state.lastPointerAngle = angle;
+
+      state.discAngle = (state.discAngle + deltaAngle) % 360;
+      cdDisc.style.transform = `rotate(${state.discAngle}deg)`;
+
+      const maxDur = Number.isFinite(audioEl.duration) ? audioEl.duration : 0;
+      if (maxDur > 0) {
+        audioEl.currentTime = Math.max(0, Math.min(maxDur, (audioEl.currentTime || 0) + (deltaAngle / 360) * 4));
+        syncDisplays();
+      }
+    });
+
+    const endScrub = () => { state.isScrubbingDisc = false; };
+    cdDisc.addEventListener('pointerup', endScrub);
+    cdDisc.addEventListener('pointercancel', endScrub);
+
+    // =========================================================================
+    // 6. LOCAL FILE & FOLDER INGESTION + TOC MODAL
+    // =========================================================================
+    const fileInputMulti = document.getElementById('file-input-multi');
+    const fileInputFolder = document.getElementById('file-input-folder');
+    const dropOverlay = document.getElementById('drop-overlay');
+
+    document.getElementById('btn-load-files').addEventListener('click', () => fileInputMulti.click());
+    document.getElementById('btn-load-folder').addEventListener('click', () => fileInputFolder.click());
+
+    const isAudioFile = (f) =>
+      f.type.startsWith('audio/') || /\.(mp3|wav|flac|ogg|m4a|aac|opus|wma)$/i.test(f.name);
+    const isImageFile = (f) =>
+      f.type.startsWith('image/') || /\.(jpe?g|png|webp|gif)$/i.test(f.name);
+    const stripExt = (name) => name.replace(/\.[^/.]+$/, '').toLowerCase();
+
+    async function ingestLocalFiles(fileList) {
+      const files = Array.from(fileList || []);
+      if (files.length === 0) return;
+
+      const audioFiles = files.filter(isAudioFile).sort((a, b) => a.name.localeCompare(b.name, 'it'));
+      const imageFiles = files.filter(isImageFile);
+
+      const imageMap = new Map();
+      let genericCoverUrl = null;
+      for (const img of imageFiles) {
+        const base = stripExt(img.name);
+        const url = URL.createObjectURL(img);
+        imageMap.set(base, url);
+        if (/^(cover|folder|front|artwork)$/i.test(base) && !genericCoverUrl) {
+          genericCoverUrl = url;
+        }
+      }
+      if (!genericCoverUrl && imageFiles.length > 0) {
+        genericCoverUrl = imageMap.get(stripExt(imageFiles[0].name)) || null;
+      }
+
+      if (audioFiles.length > 0) {
+        const parsedTracks = [];
+        for (let i = 0; i < audioFiles.length; i++) {
+          const af = audioFiles[i];
+          const embeddedUrl = await extractEmbeddedCoverUrl(af);
+          const matchedSidecar = imageMap.get(stripExt(af.name));
+          parsedTracks.push({
+            number: i + 1,
+            title: af.name.replace(/\.[^/.]+$/, ''),
+            url: URL.createObjectURL(af),
+            coverUrl: embeddedUrl || matchedSidecar || genericCoverUrl || null,
+            cues: [null, null, null]
+          });
+        }
+        state.tracks = parsedTracks;
+        loadTrackAt(0, true);
+      } else if (genericCoverUrl) {
+        getCurrentTrack().coverUrl = genericCoverUrl;
+        applyTrackArtwork();
+      }
+    }
+
+    fileInputMulti.addEventListener('change', (e) => ingestLocalFiles(e.target.files));
+    fileInputFolder.addEventListener('change', (e) => ingestLocalFiles(e.target.files));
+
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropOverlay.classList.remove('hidden');
+    });
+    window.addEventListener('dragleave', (e) => {
+      if (e.clientX === 0 && e.clientY === 0) dropOverlay.classList.add('hidden');
+    });
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropOverlay.classList.add('hidden');
+      if (e.dataTransfer && e.dataTransfer.files) {
+        ingestLocalFiles(e.dataTransfer.files);
+      }
+    });
+
+    // TOC Modal
+    function openToc() {
+      renderToc();
+      tocModal.classList.remove('hidden');
+    }
+    function closeToc() {
+      tocModal.classList.add('hidden');
+    }
+    document.getElementById('btn-close-toc').addEventListener('click', closeToc);
+    tocModal.addEventListener('click', (e) => {
+      if (e.target === tocModal) closeToc();
+    });
+
+    function renderToc() {
+      tocCount.textContent = `${pad3(state.tracks.length)} Tracce in memoria`;
+      tocList.innerHTML = '';
+      state.tracks.forEach((t, idx) => {
+        const row = document.createElement('button');
+        row.type = 'button';
+        const active = idx === state.currentIndex;
+        row.className = `w-full px-4 py-2.5 text-left flex items-center justify-between gap-3 transition cursor-pointer ${
+          active ? 'bg-orange-500/15 text-orange-300' : 'hover:bg-white/5 text-zinc-200'
+        }`;
+        row.innerHTML = `
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="font-mono text-xs px-1.5 py-0.5 rounded bg-black/40 border border-white/10">${pad3(t.number)}</span>
+            <span class="text-xs font-medium truncate">${t.title}</span>
+          </div>
+          <span class="text-[10px] font-mono uppercase ${active ? 'text-orange-400' : 'text-zinc-500'}">${active ? 'ACTIVE' : 'SELECT'}</span>
+        `;
+        row.addEventListener('click', () => {
+          closeToc();
+          loadTrackAt(idx, true);
+        });
+        tocList.appendChild(row);
+      });
+    }
+
+    // Auto-advance to next track
+    audioEl.addEventListener('ended', () => {
+      if (state.tracks.length > 1) {
+        loadTrackAt(state.currentIndex + 1, true);
+      } else {
+        stopAudio();
+      }
+    });
+
+    // =========================================================================
+    // 7. ANIMATION LOOP (CD ROTATION, LED DISPLAYS & L/R LEVEL METER)
+    // =========================================================================
+    let lastFrameTime = performance.now();
+    const freqData = new Uint8Array(128);
+
+    function tick(now) {
+      const dtSec = Math.min(0.1, (now - lastFrameTime) / 1000);
+      lastFrameTime = now;
+
+      if (state.powered && state.isPlaying && !state.isScrubbingDisc) {
+        const degPerSec = 95 * (state.varispeed / 100);
+        state.discAngle = (state.discAngle + degPerSec * dtSec) % 360;
+        cdDisc.style.transform = `rotate(${state.discAngle}deg)`;
+      }
+
+      syncDisplays();
+
+      // Update L/R LED segments
+      let levelNorm = 0;
+      if (state.powered && state.isPlaying) {
+        if (analyserNode) {
+          analyserNode.getByteFrequencyData(freqData);
+          let sum = 0;
+          for (let i = 0; i < 48; i++) sum += freqData[i];
+          levelNorm = Math.min(1, (sum / (48 * 255)) * 1.9 * (state.level / 58));
+        } else {
+          levelNorm = (0.45 + 0.35 * Math.sin(now * 0.012)) * (state.level / 100);
+        }
+      }
+
+      const activeBars = Math.round(levelNorm * meterSegments.length);
+      for (let i = 0; i < meterSegments.length; i++) {
+        // i = 0 is top bar, i = 9 is bottom bar
+        const barFromBottom = meterSegments.length - i;
+        meterSegments[i].style.opacity = barFromBottom <= activeBars ? '1' : '0.14';
+      }
+
+      requestAnimationFrame(tick);
+    }
+
+    // Initialize hardware state
+    updateKnobsVisual();
+    updateCueLeds();
+    applyTrackArtwork();
+    syncDisplays();
+    renderToc();
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>
+
